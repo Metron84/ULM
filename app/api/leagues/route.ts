@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createServerClient as createSsrServerClient } from "@supabase/ssr";
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
+import { revalidatePath } from "next/cache";
 
 export const runtime = "nodejs";
 
@@ -169,6 +170,10 @@ export async function POST(request: Request) {
     league_participant_id: participant.id,
     is_active: true,
   });
+
+  revalidatePath("/leagues");
+  revalidatePath(`/leagues/${league.id}`);
+  revalidatePath(`/leagues/${league.id}/commissioner`);
 
   return NextResponse.json({
     ok: true,
