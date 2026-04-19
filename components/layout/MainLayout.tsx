@@ -50,7 +50,7 @@ export async function MainLayout({ children }: MainLayoutProps) {
   return (
     <ProtectedRoute mode="persona-required">
       <div className="min-h-screen bg-offwhite pb-28 demo-fade-in">
-        <header className="sticky top-[33px] z-30 border-b border-border/70 bg-offwhite/90 backdrop-blur">
+        <header className="sticky top-[29px] z-30 border-b border-border/70 bg-offwhite/90 backdrop-blur">
           <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-5 sm:px-8">
             <div>
               <p className="text-xs font-medium uppercase tracking-[0.18em] text-forest/60">

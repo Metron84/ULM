@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Badge } from "@/components/ui/badge";
@@ -27,12 +28,32 @@ type FixtureCard = {
   dateLabel: string;
 };
 
+export const metadata: Metadata = {
+  title: "Home | Ultimate League Manager",
+  description:
+    "Track your fantasy momentum with assistant briefings, predictions, and matchday decisions in one calm dashboard.",
+  openGraph: {
+    title: "Ultimate League Manager - Home",
+    description:
+      "Your premium football command center for rankings, assistant insights, and next matchday actions.",
+    type: "website",
+    url: "/home",
+    siteName: "Ultimate League Manager",
+    images: [{ url: "/og-default.svg", width: 1200, height: 630, alt: "Ultimate League Manager" }],
+  },
+};
+
 export default async function HomePage() {
   let displayName = "Manager";
   let persona: AssistantPersona = "analyst";
   let briefing = postMatchReviewFallbacks.analyst[0];
   let briefingSeedKey = "ulm-default-seed";
   const fixtures: FixtureCard[] = [];
+  const tickerEntries: string[] = [
+    "Mbappé 7.9 • +2 bonus • 14 pts this week",
+    "Salah form watch • 3 returns in last 4",
+    "Haaland projection uplift • strong fixture window",
+  ];
 
   if (hasSupabaseEnv()) {
     const supabase = await createServerClient();
@@ -116,6 +137,13 @@ export default async function HomePage() {
             : "TBD",
         });
       });
+
+      const fixtureTicker = fixtures
+        .slice(0, 2)
+        .map((fixture) => `${fixture.home} vs ${fixture.away} • ${fixture.dateLabel}`);
+      if (fixtureTicker.length > 0) {
+        tickerEntries.unshift(...fixtureTicker);
+      }
     }
   }
 
@@ -129,7 +157,7 @@ export default async function HomePage() {
 
   return (
     <MainLayout>
-      <section className="space-y-6">
+      <section className="space-y-5 sm:space-y-6">
         <header className="space-y-4 rounded-3xl border border-border/70 bg-card/85 p-6 shadow-soft sm:p-8">
           <div className="flex items-start justify-between gap-4">
             <div>
@@ -147,9 +175,11 @@ export default async function HomePage() {
 
           <div className="rounded-2xl border border-border/70 bg-offwhite px-4 py-3">
             <p className="text-sm font-semibold text-forest">Live ticker</p>
-            <p className="mt-1 border-b border-gold/55 pb-2 text-sm text-charcoal/85">
-              Mbappé 7.9 • +2 bonus • 14 pts this week
-            </p>
+            <div className="mt-1 overflow-hidden border-b border-gold/55 pb-2">
+              <p className="text-sm text-charcoal/85">
+                {tickerEntries.slice(0, 3).join("   •   ")}
+              </p>
+            </div>
           </div>
         </header>
 

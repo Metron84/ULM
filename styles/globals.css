@@ -228,6 +228,14 @@
   .demo-fade-in {
     animation: demo-fade-in 380ms ease-out both;
   }
+
+  .gold-sparkle {
+    animation: gold-sparkle 760ms ease-out both;
+  }
+
+  .gold-sparkle-loop {
+    animation: gold-sparkle-loop 1.8s ease-in-out infinite;
+  }
 }
 
 @keyframes demo-fade-in {
@@ -238,5 +246,32 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes gold-sparkle {
+  0% {
+    opacity: 0;
+    transform: scale(0.65) rotate(-18deg);
+  }
+  45% {
+    opacity: 1;
+    transform: scale(1.08) rotate(8deg);
+  }
+  100% {
+    opacity: 0.75;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes gold-sparkle-loop {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-1px);
   }
 }

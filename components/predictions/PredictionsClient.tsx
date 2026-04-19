@@ -75,6 +75,7 @@ export function PredictionsClient({ fixtures, leaderboard }: PredictionsClientPr
   const [selectedScorerId, setSelectedScorerId] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [calculating, setCalculating] = useState(false);
+  const [sparkleBurst, setSparkleBurst] = useState(false);
 
   const isNoScorer = homeScore === 0 && awayScore === 0;
   const filteredScorers = useMemo(() => {
@@ -123,6 +124,8 @@ export function PredictionsClient({ fixtures, leaderboard }: PredictionsClientPr
       toast.success("Prediction locked ✓", {
         description: "Gold sparkle unlocked ✨",
       });
+      setSparkleBurst(true);
+      window.setTimeout(() => setSparkleBurst(false), 800);
       setPredictionSheetOpen(false);
       router.refresh();
     } catch (error) {
@@ -160,7 +163,7 @@ export function PredictionsClient({ fixtures, leaderboard }: PredictionsClientPr
   };
 
   return (
-    <section className="space-y-6">
+    <section className="space-y-5 sm:space-y-6">
       <header className="rounded-3xl border border-border/70 bg-card/90 p-6 shadow-soft sm:p-8">
         <h2 className="text-3xl font-bold tracking-tight text-forest">Predictions - Round of 16</h2>
         <p className="mt-2 text-sm text-charcoal/75 sm:text-base">
@@ -250,6 +253,9 @@ export function PredictionsClient({ fixtures, leaderboard }: PredictionsClientPr
                     onClick={() => openPredictionSheet(fixture)}
                   >
                     {fixture.prediction ? "Edit" : "Make Prediction"}
+                    {sparkleBurst && !fixture.prediction ? (
+                      <Sparkles className="ml-1 h-3.5 w-3.5 text-gold gold-sparkle" />
+                    ) : null}
                   </Button>
                 </div>
               </article>

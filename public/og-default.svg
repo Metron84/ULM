@@ -1,0 +1,19 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ultimate League Manager">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F8F5F0" />
+      <stop offset="100%" stop-color="#E3EFE7" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <rect x="78" y="78" width="1044" height="474" rx="36" fill="#FFFFFF" opacity="0.92" />
+  <text x="120" y="264" fill="#0A3D2A" font-family="Inter, Arial, sans-serif" font-size="72" font-weight="700">
+    Ultimate League Manager
+  </text>
+  <text x="120" y="328" fill="#2C2C2C" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="500">
+    Your game. Your assistant. Your moment.
+  </text>
+  <text x="120" y="404" fill="#D4AF77" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="600">
+    World Cup 2026 Demo
+  </text>
+</svg>

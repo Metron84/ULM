@@ -23,6 +23,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
 type TradesClientProps = {
@@ -60,6 +61,8 @@ export function TradesClient({ data }: TradesClientProps) {
   const [requestingItem, setRequestingItem] = useState("");
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [stepLoading, setStepLoading] = useState(false);
+  const [tradeSparkle, setTradeSparkle] = useState(false);
   const [commissionComments, setCommissionComments] = useState<Record<string, string>>({});
   const [actingTradeId, setActingTradeId] = useState<string | null>(null);
 
@@ -100,6 +103,14 @@ export function TradesClient({ data }: TradesClientProps) {
     setRequestingItem("");
     setMessage("");
     setSelectedTargetParticipantId(data.managerTargets[0]?.participantId ?? "");
+  };
+
+  const goToStep = (targetStep: Step) => {
+    setStepLoading(true);
+    window.setTimeout(() => {
+      setStep(targetStep);
+      setStepLoading(false);
+    }, 180);
   };
 
   const submitTrade = async () => {
@@ -150,6 +161,8 @@ export function TradesClient({ data }: TradesClientProps) {
       toast.success("Trade sent to commissioner ✨", {
         description: "Proposal submitted in premium mode.",
       });
+      setTradeSparkle(true);
+      window.setTimeout(() => setTradeSparkle(false), 900);
       setProposeOpen(false);
       resetProposal();
       router.refresh();
@@ -181,6 +194,10 @@ export function TradesClient({ data }: TradesClientProps) {
           ? "Trade approved ✨"
           : "Trade rejected",
       );
+      if (action === "approve") {
+        setTradeSparkle(true);
+        window.setTimeout(() => setTradeSparkle(false), 900);
+      }
       router.refresh();
     } catch (error) {
       const text = error instanceof Error ? error.message : "Trade action failed.";
@@ -191,7 +208,7 @@ export function TradesClient({ data }: TradesClientProps) {
   };
 
   return (
-    <section className="space-y-6">
+    <section className="space-y-5 sm:space-y-6">
       <header className="rounded-3xl border border-border/70 bg-card/90 p-6 shadow-soft sm:p-8">
         <h2 className="text-3xl font-bold tracking-tight text-forest">Trades & Agreements</h2>
         <p className="mt-2 text-sm text-charcoal/75 sm:text-base">
@@ -324,6 +341,7 @@ export function TradesClient({ data }: TradesClientProps) {
       >
         <Plus className="h-4 w-4 text-gold" />
         Propose Trade
+        {tradeSparkle ? <Sparkles className="h-3.5 w-3.5 text-gold gold-sparkle" /> : null}
       </button>
 
       <Sheet open={proposeOpen} onOpenChange={setProposeOpen}>
@@ -336,7 +354,15 @@ export function TradesClient({ data }: TradesClientProps) {
           </SheetHeader>
 
           <div className="space-y-4 px-6 pb-6">
-            {step === 1 && (
+            {stepLoading ? (
+              <div className="space-y-3">
+                <Skeleton className="h-6 w-36 rounded-xl bg-sage/25" />
+                <Skeleton className="h-16 w-full rounded-2xl bg-sage/20" />
+                <Skeleton className="h-16 w-full rounded-2xl bg-sage/20" />
+              </div>
+            ) : null}
+
+            {!stepLoading && step === 1 && (
               <div className="space-y-3">
                 <p className="text-sm font-medium text-forest">What you&apos;re offering</p>
                 <div className="grid grid-cols-2 gap-2">
@@ -368,14 +394,14 @@ export function TradesClient({ data }: TradesClientProps) {
                 <Button
                   type="button"
                   className="h-10 rounded-2xl bg-sage text-forest hover:bg-sage/80"
-                  onClick={() => setStep(2)}
+                  onClick={() => goToStep(2)}
                 >
                   Continue
                 </Button>
               </div>
             )}
 
-            {step === 2 && (
+            {!stepLoading && step === 2 && (
               <div className="space-y-3">
                 <p className="text-sm font-medium text-forest">What you want</p>
                 <select
@@ -424,13 +450,13 @@ export function TradesClient({ data }: TradesClientProps) {
                   className="h-11 w-full rounded-2xl border border-border bg-offwhite px-3 text-sm"
                 />
                 <div className="flex gap-2">
-                  <Button type="button" variant="outline" className="h-10 rounded-2xl" onClick={() => setStep(1)}>
+                  <Button type="button" variant="outline" className="h-10 rounded-2xl" onClick={() => goToStep(1)}>
                     Back
                   </Button>
                   <Button
                     type="button"
                     className="h-10 rounded-2xl bg-sage text-forest hover:bg-sage/80"
-                    onClick={() => setStep(3)}
+                    onClick={() => goToStep(3)}
                   >
                     Continue
                   </Button>
@@ -438,7 +464,7 @@ export function TradesClient({ data }: TradesClientProps) {
               </div>
             )}
 
-            {step === 3 && (
+            {!stepLoading && step === 3 && (
               <div className="space-y-3">
                 <p className="text-sm font-medium text-forest">Review & Message</p>
                 <div className="rounded-2xl border border-border/70 bg-offwhite p-3 text-sm text-charcoal">
@@ -482,7 +508,7 @@ export function TradesClient({ data }: TradesClientProps) {
                 />
 
                 <div className="flex gap-2">
-                  <Button type="button" variant="outline" className="h-10 rounded-2xl" onClick={() => setStep(2)}>
+                  <Button type="button" variant="outline" className="h-10 rounded-2xl" onClick={() => goToStep(2)}>
                     Back
                   </Button>
                   <Button

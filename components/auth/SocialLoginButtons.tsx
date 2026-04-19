@@ -10,8 +10,8 @@ type SocialLoginButtonsProps = {
 
 export function SocialLoginButtons({ className }: SocialLoginButtonsProps) {
   const handlePlaceholder = (provider: "Google" | "Apple") => {
-    toast.message(`${provider} login is coming soon`, {
-      description: "Email + password is fully ready now.",
+    toast.message(`${provider} login is not enabled for this demo`, {
+      description: "Sign in instantly with email and password.",
     });
   };
 

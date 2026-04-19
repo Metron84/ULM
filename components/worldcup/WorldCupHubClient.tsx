@@ -37,7 +37,7 @@ export function WorldCupHubClient({
   const tabLabel = tab === "overall" ? "Overall Leaderboard" : tab === "draft" ? "Draft Mode" : "Open Selection Mode";
 
   return (
-    <section className="space-y-6 demo-fade-in">
+    <section className="space-y-5 sm:space-y-6 demo-fade-in">
       <Card className="relative overflow-hidden rounded-3xl border-border/70 bg-card/90 py-6 shadow-soft">
         <div
           aria-hidden="true"

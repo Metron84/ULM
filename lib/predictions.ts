@@ -1,3 +1,5 @@
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
+
 import { hasSupabaseEnv } from "@/lib/supabase";
 import { createServerClient } from "@/lib/supabase/server";
 import { ensureDemoRosterForUser } from "@/lib/roster";
@@ -53,6 +55,200 @@ type ScorerRow = {
   real_team: { short_name?: string | null } | null;
 };
 
+const DEMO_PREDICTION_USERS = [
+  {
+    id: "00000000-0000-4000-8000-000000000221",
+    email: "prediction.rival.one@ulm.demo",
+    displayName: "Prediction Rival One",
+    teamName: "Knockout Class",
+  },
+  {
+    id: "00000000-0000-4000-8000-000000000222",
+    email: "prediction.rival.two@ulm.demo",
+    displayName: "Prediction Rival Two",
+    teamName: "Final Whistle FC",
+  },
+] as const;
+
+function createServiceRoleClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!supabaseUrl || !serviceRoleKey) return null;
+  return createSupabaseClient(supabaseUrl, serviceRoleKey, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
+}
+
+async function ensureDemoPredictionData(
+  currentUserId: string,
+  leagueId: string,
+  leagueParticipantId: string,
+  competitionId: string,
+) {
+  const service = createServiceRoleClient();
+  if (!service) return;
+
+  for (const demoUser of DEMO_PREDICTION_USERS) {
+    await service.from("users").upsert(
+      {
+        id: demoUser.id,
+        email: demoUser.email,
+        display_name: demoUser.displayName,
+        assistant_persona: "analyst",
+      },
+      { onConflict: "id" },
+    );
+  }
+
+  const participantIds: string[] = [leagueParticipantId];
+  for (const [index, demoUser] of DEMO_PREDICTION_USERS.entries()) {
+    const { data: participant } = await service
+      .from("league_participants")
+      .upsert(
+        {
+          league_id: leagueId,
+          user_id: demoUser.id,
+          team_name: demoUser.teamName,
+          rank: index + 2,
+          total_points: 250 - index * 9,
+          draft_order: index + 3,
+        },
+        { onConflict: "league_id,user_id" },
+      )
+      .select("id")
+      .maybeSingle();
+    if (participant?.id) participantIds.push(participant.id as string);
+  }
+
+  let { data: finishedFixtures } = await service
+    .from("fixtures")
+    .select("id,home_team_id,away_team_id,status,score_home,score_away")
+    .eq("competition_id", competitionId)
+    .eq("status", "finished")
+    .order("match_date", { ascending: true })
+    .limit(3);
+
+  if ((finishedFixtures?.length ?? 0) < 3) {
+    const { data: allFixtures } = await service
+      .from("fixtures")
+      .select("id")
+      .eq("competition_id", competitionId)
+      .order("match_date", { ascending: true })
+      .limit(3);
+    for (const [index, fixture] of (allFixtures ?? []).entries()) {
+      await service
+        .from("fixtures")
+        .update({
+          status: "finished",
+          score_home: index === 2 ? 1 : 2,
+          score_away: index === 0 ? 0 : 1,
+        })
+        .eq("id", fixture.id as string);
+    }
+    const { data: refreshed } = await service
+      .from("fixtures")
+      .select("id,home_team_id,away_team_id,status,score_home,score_away")
+      .eq("competition_id", competitionId)
+      .eq("status", "finished")
+      .order("match_date", { ascending: true })
+      .limit(3);
+    finishedFixtures = refreshed ?? [];
+  }
+
+  const teamIds = Array.from(
+    new Set(
+      (finishedFixtures ?? []).flatMap((fixture) => [
+        fixture.home_team_id as string | null,
+        fixture.away_team_id as string | null,
+      ]),
+    ),
+  ).filter((id): id is string => Boolean(id));
+
+  const { data: players } = await service
+    .from("players")
+    .select("id,real_team_id,position")
+    .in("real_team_id", teamIds)
+    .eq("is_active", true);
+
+  const scorerByTeam = new Map<string, string>();
+  (players ?? []).forEach((player) => {
+    const teamId = player.real_team_id as string | null;
+    if (!teamId || scorerByTeam.has(teamId)) return;
+    scorerByTeam.set(teamId, player.id as string);
+  });
+
+  const finished = finishedFixtures ?? [];
+  for (const [participantIndex, participantId] of participantIds.entries()) {
+    for (const [fixtureIndex, fixture] of finished.entries()) {
+      const fixtureId = fixture.id as string;
+      const existing = await service
+        .from("predictions")
+        .select("id")
+        .eq("league_participant_id", participantId)
+        .eq("fixture_id", fixtureId)
+        .maybeSingle();
+
+      if (existing.data?.id) continue;
+
+      const homeScore = participantIndex === 0 ? ((fixture.score_home as number | null) ?? 1) : 1;
+      const awayScore = participantIndex === 1 ? ((fixture.score_away as number | null) ?? 1) : 0;
+      const scorerId =
+        fixtureIndex === 2 && homeScore === 0 && awayScore === 0
+          ? null
+          : scorerByTeam.get((fixture.home_team_id as string) ?? "") ?? null;
+
+      await service.from("predictions").insert({
+        league_id: leagueId,
+        league_participant_id: participantId,
+        fixture_id: fixtureId,
+        predicted_home_score: homeScore,
+        predicted_away_score: awayScore,
+        predicted_scorer_id: scorerId,
+        is_no_scorer: homeScore === 0 && awayScore === 0,
+        points_awarded: participantIndex === 0 ? 3 + (fixtureIndex % 2) : 1 + (participantIndex % 2),
+      });
+    }
+  }
+
+  for (const [index, participantId] of participantIds.entries()) {
+    await service.from("prediction_standings").upsert(
+      {
+        league_id: leagueId,
+        week_number: 1,
+        league_participant_id: participantId,
+        total_prediction_points: Math.max(6, 10 - index * 2),
+        rank: index + 1,
+      },
+      { onConflict: "league_id,week_number,league_participant_id" },
+    );
+  }
+
+  const currentRows = finished.slice(0, 3).length;
+  if (currentRows === 0) return;
+
+  const { data: currentPredictions } = await service
+    .from("predictions")
+    .select("id")
+    .eq("league_participant_id", leagueParticipantId);
+  if ((currentPredictions?.length ?? 0) < 2) {
+    for (const fixture of finished.slice(0, 2)) {
+      await service.from("predictions").upsert(
+        {
+          league_id: leagueId,
+          league_participant_id: leagueParticipantId,
+          fixture_id: fixture.id as string,
+          predicted_home_score: (fixture.score_home as number | null) ?? 1,
+          predicted_away_score: (fixture.score_away as number | null) ?? 0,
+          predicted_scorer_id: scorerByTeam.get((fixture.home_team_id as string) ?? "") ?? null,
+          is_no_scorer: false,
+          points_awarded: 3,
+        },
+        { onConflict: "league_participant_id,fixture_id" },
+      );
+    }
+  }
+}
+
 export async function getPredictionsPageData(): Promise<PredictionsPageData | null> {
   if (!hasSupabaseEnv()) return null;
 
@@ -86,6 +282,8 @@ export async function getPredictionsPageData(): Promise<PredictionsPageData | nu
 
   if (!league?.competition_id) return null;
   const competitionId = league.competition_id as string;
+
+  await ensureDemoPredictionData(user.id, leagueId, leagueParticipantId, competitionId);
 
   const { data: fixtures } = await supabase
     .from("fixtures")

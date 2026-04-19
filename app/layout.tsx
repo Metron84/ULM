@@ -11,7 +11,10 @@ const inter = Inter({
   display: "swap",
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "Ultimate League Manager",
   description:
     "Your game. Your assistant. Your moment. The calm, premium home for your football leagues.",
@@ -50,10 +53,10 @@ export default async function RootLayout({
         className="min-h-full bg-background text-foreground antialiased font-sans"
         data-auth-state={authState}
       >
-        <div className="sticky top-0 z-40 border-b border-sage/45 bg-sage/55 px-4 py-2 text-center text-xs font-medium tracking-wide text-forest">
+        <div className="sticky top-0 z-40 border-b border-sage/30 bg-sage/35 px-4 py-1.5 text-center text-[11px] font-medium tracking-wide text-forest/80">
           Interactive Demo - World Cup 2026
         </div>
-        <div className="flex min-h-[calc(100vh-33px)] flex-col">{children}</div>
+        <div className="flex min-h-[calc(100vh-29px)] flex-col">{children}</div>
         <Toaster richColors position="top-center" />
       </body>
     </html>

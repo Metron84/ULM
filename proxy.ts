@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { createServerClient } from "@supabase/ssr";
 
 import { updateSession } from "@/lib/supabase/middleware";
-import { createServerClient } from "@supabase/ssr";
 
 const authRoutes = new Set(["/login", "/signup"]);
 const protectedPrefixes = [
@@ -16,7 +16,7 @@ const protectedPrefixes = [
   "/world-cup",
 ];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const response = await updateSession(request);
   const pathname = request.nextUrl.pathname;
 

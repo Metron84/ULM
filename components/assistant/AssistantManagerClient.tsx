@@ -2,6 +2,7 @@
 
 import { FormEvent, useMemo, useState } from "react";
 import { Sparkles, ThumbsDown, ThumbsUp } from "lucide-react";
+import { toast } from "sonner";
 
 import {
   type AssistantFunctionType,
@@ -29,6 +30,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
 type ChatRole = "user" | "assistant";
@@ -84,6 +86,9 @@ export function AssistantManagerClient({ persona }: AssistantManagerClientProps)
   const [activeTemplate, setActiveTemplate] = useState("");
   const [feedback, setFeedback] = useState<"up" | "down" | null>(null);
   const [chatInput, setChatInput] = useState("");
+  const [refreshingTemplate, setRefreshingTemplate] = useState(false);
+  const [replyLoading, setReplyLoading] = useState(false);
+  const [upvoteSparkle, setUpvoteSparkle] = useState(false);
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([
     {
       id: "seed-assistant",
@@ -109,8 +114,12 @@ export function AssistantManagerClient({ persona }: AssistantManagerClientProps)
 
   const askAgain = () => {
     if (!activeFunction) return;
-    setActiveTemplate((prev) => selectRandomTemplate(persona, activeFunction, prev));
-    setFeedback(null);
+    setRefreshingTemplate(true);
+    window.setTimeout(() => {
+      setActiveTemplate((prev) => selectRandomTemplate(persona, activeFunction, prev));
+      setFeedback(null);
+      setRefreshingTemplate(false);
+    }, 260);
   };
 
   const handleSendChat = (event: FormEvent<HTMLFormElement>) => {
@@ -124,19 +133,23 @@ export function AssistantManagerClient({ persona }: AssistantManagerClientProps)
       text: trimmed,
     };
 
-    const quickReply = selectRandomTemplate(persona, "quick_chat");
-    const assistantMessage: ChatMessage = {
-      id: `assistant-${Date.now() + 1}`,
-      role: "assistant",
-      text: `${quickReply} ✨`,
-    };
-
-    setChatHistory((prev) => [...prev, userMessage, assistantMessage]);
+    setChatHistory((prev) => [...prev, userMessage]);
     setChatInput("");
+    setReplyLoading(true);
+    window.setTimeout(() => {
+      const quickReply = selectRandomTemplate(persona, "quick_chat");
+      const assistantMessage: ChatMessage = {
+        id: `assistant-${Date.now() + 1}`,
+        role: "assistant",
+        text: `${quickReply} ✨`,
+      };
+      setChatHistory((prev) => [...prev, assistantMessage]);
+      setReplyLoading(false);
+    }, 320);
   };
 
   return (
-    <section className="space-y-6">
+    <section className="space-y-5 sm:space-y-6">
       <header className="rounded-3xl border border-border/70 bg-card/90 p-6 shadow-soft sm:p-8">
         <div className="flex items-center gap-4 sm:gap-6">
           <div
@@ -203,6 +216,12 @@ export function AssistantManagerClient({ persona }: AssistantManagerClientProps)
                 {message.text}
               </div>
             ))}
+            {replyLoading ? (
+              <div className="ml-auto max-w-[70%] space-y-2">
+                <Skeleton className="h-4 w-40 rounded-xl bg-sage/35" />
+                <Skeleton className="h-4 w-28 rounded-xl bg-sage/25" />
+              </div>
+            ) : null}
           </div>
           <form onSubmit={handleSendChat} className="flex flex-col gap-3 sm:flex-row">
             <input
@@ -240,10 +259,19 @@ export function AssistantManagerClient({ persona }: AssistantManagerClientProps)
 
           <div className="space-y-4 px-6 pb-2 pt-1">
             <div className="rounded-2xl border border-border/70 bg-offwhite p-4 text-sm leading-relaxed text-charcoal">
-              {activeTemplate}
-              <span className="ml-2 inline-flex items-center text-gold">
-                <Sparkles className="h-4 w-4" />
-              </span>
+              {refreshingTemplate ? (
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-full rounded-xl bg-sage/30" />
+                  <Skeleton className="h-4 w-4/5 rounded-xl bg-sage/20" />
+                </div>
+              ) : (
+                <>
+                  {activeTemplate}
+                  <span className="ml-2 inline-flex items-center text-gold">
+                    <Sparkles className="h-4 w-4 gold-sparkle-loop" />
+                  </span>
+                </>
+              )}
             </div>
 
             <div className="flex flex-wrap gap-2">
@@ -254,10 +282,18 @@ export function AssistantManagerClient({ persona }: AssistantManagerClientProps)
                   "h-10 rounded-2xl",
                   feedback === "up" && "bg-sage/60 text-forest hover:bg-sage/70",
                 )}
-                onClick={() => setFeedback("up")}
+                onClick={() => {
+                  setFeedback("up");
+                  setUpvoteSparkle(true);
+                  toast.success("Assistant feedback saved", {
+                    description: "Your co-manager will adapt to this signal.",
+                  });
+                  window.setTimeout(() => setUpvoteSparkle(false), 800);
+                }}
               >
                 <ThumbsUp className="mr-1 h-4 w-4" />
                 Thumbs up
+                {upvoteSparkle ? <Sparkles className="ml-1 h-3.5 w-3.5 text-gold gold-sparkle" /> : null}
               </Button>
               <Button
                 type="button"

@@ -9,11 +9,17 @@ type NavItem = {
   label: string;
   href: string;
   icon: React.ComponentType<{ className?: string }>;
+  activePrefixes?: string[];
 };
 
 const items: NavItem[] = [
   { label: "Home", href: "/home", icon: Home },
-  { label: "My Leagues", href: "/trades", icon: Trophy },
+  {
+    label: "My Leagues",
+    href: "/leagues",
+    icon: Trophy,
+    activePrefixes: ["/leagues", "/predictions", "/trades"],
+  },
   { label: "Roster", href: "/roster", icon: Users },
   { label: "Assistant", href: "/assistant", icon: Sparkles },
   { label: "World Cup", href: "/worldcup", icon: Globe },
@@ -43,8 +49,10 @@ export function BottomNav({ className }: BottomNavProps) {
       >
         {items.map((item) => {
           const Icon = item.icon;
-          const isActive =
-            pathname === item.href || (item.href !== "/home" && pathname.startsWith(item.href));
+          const prefixes = item.activePrefixes ?? [item.href];
+          const isActive = prefixes.some(
+            (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+          );
           return (
             <li key={item.href} className="min-w-0">
               <Link

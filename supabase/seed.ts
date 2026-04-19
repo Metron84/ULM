@@ -13,12 +13,16 @@ type PlayerSeed = {
   current_club: string;
   sofascore_id?: string;
   team: string;
+  photo_url?: string;
 };
 
 type FixtureSeed = {
   home: string;
   away: string;
   match_date: string;
+  status?: "scheduled" | "live" | "finished";
+  score_home?: number | null;
+  score_away?: number | null;
 };
 
 type Persona = "analyst" | "diehard_fan" | "fantasy_veteran";
@@ -70,6 +74,11 @@ const players: PlayerSeed[] = [
   { name: "Dayot Upamecano", position: "DEF", nationality: "France", current_club: "Bayern Munich", team: "France" },
   { name: "Mike Maignan", position: "GK", nationality: "France", current_club: "AC Milan", team: "France" },
   { name: "William Saliba", position: "DEF", nationality: "France", current_club: "Arsenal", team: "France" },
+  { name: "Eduardo Camavinga", position: "MID", nationality: "France", current_club: "Real Madrid", team: "France" },
+  { name: "Randal Kolo Muani", position: "FWD", nationality: "France", current_club: "Paris Saint-Germain", team: "France" },
+  { name: "Kingsley Coman", position: "FWD", nationality: "France", current_club: "Bayern Munich", team: "France" },
+  { name: "Ibrahima Konate", position: "DEF", nationality: "France", current_club: "Liverpool", team: "France" },
+  { name: "Benjamin Pavard", position: "DEF", nationality: "France", current_club: "Inter Milan", team: "France" },
 
   { name: "Harry Kane", position: "FWD", nationality: "England", current_club: "Bayern Munich", team: "England" },
   { name: "Jude Bellingham", position: "MID", nationality: "England", current_club: "Real Madrid", team: "England" },
@@ -79,6 +88,11 @@ const players: PlayerSeed[] = [
   { name: "John Stones", position: "DEF", nationality: "England", current_club: "Manchester City", team: "England" },
   { name: "Kyle Walker", position: "DEF", nationality: "England", current_club: "Manchester City", team: "England" },
   { name: "Jordan Pickford", position: "GK", nationality: "England", current_club: "Everton", team: "England" },
+  { name: "Cole Palmer", position: "MID", nationality: "England", current_club: "Chelsea", team: "England" },
+  { name: "Ollie Watkins", position: "FWD", nationality: "England", current_club: "Aston Villa", team: "England" },
+  { name: "Trent Alexander-Arnold", position: "DEF", nationality: "England", current_club: "Liverpool", team: "England" },
+  { name: "Luke Shaw", position: "DEF", nationality: "England", current_club: "Manchester United", team: "England" },
+  { name: "Marc Guehi", position: "DEF", nationality: "England", current_club: "Crystal Palace", team: "England" },
 
   { name: "Lionel Messi", position: "FWD", nationality: "Argentina", current_club: "Inter Miami", team: "Argentina" },
   { name: "Julian Alvarez", position: "FWD", nationality: "Argentina", current_club: "Atletico Madrid", team: "Argentina" },
@@ -88,6 +102,11 @@ const players: PlayerSeed[] = [
   { name: "Cristian Romero", position: "DEF", nationality: "Argentina", current_club: "Tottenham", team: "Argentina" },
   { name: "Nicolas Otamendi", position: "DEF", nationality: "Argentina", current_club: "Benfica", team: "Argentina" },
   { name: "Emiliano Martinez", position: "GK", nationality: "Argentina", current_club: "Aston Villa", team: "Argentina" },
+  { name: "Angel Di Maria", position: "FWD", nationality: "Argentina", current_club: "Benfica", team: "Argentina" },
+  { name: "Nicolas Gonzalez", position: "FWD", nationality: "Argentina", current_club: "Juventus", team: "Argentina" },
+  { name: "Rodrigo De Paul", position: "MID", nationality: "Argentina", current_club: "Atletico Madrid", team: "Argentina" },
+  { name: "Lisandro Martinez", position: "DEF", nationality: "Argentina", current_club: "Manchester United", team: "Argentina" },
+  { name: "Nahuel Molina", position: "DEF", nationality: "Argentina", current_club: "Atletico Madrid", team: "Argentina" },
 
   { name: "Vinicius Junior", position: "FWD", nationality: "Brazil", current_club: "Real Madrid", team: "Brazil" },
   { name: "Rodrygo", position: "FWD", nationality: "Brazil", current_club: "Real Madrid", team: "Brazil" },
@@ -97,6 +116,11 @@ const players: PlayerSeed[] = [
   { name: "Marquinhos", position: "DEF", nationality: "Brazil", current_club: "Paris Saint-Germain", team: "Brazil" },
   { name: "Eder Militao", position: "DEF", nationality: "Brazil", current_club: "Real Madrid", team: "Brazil" },
   { name: "Alisson Becker", position: "GK", nationality: "Brazil", current_club: "Liverpool", team: "Brazil" },
+  { name: "Endrick", position: "FWD", nationality: "Brazil", current_club: "Real Madrid", team: "Brazil" },
+  { name: "Gabriel Martinelli", position: "FWD", nationality: "Brazil", current_club: "Arsenal", team: "Brazil" },
+  { name: "Casemiro", position: "MID", nationality: "Brazil", current_club: "Manchester United", team: "Brazil" },
+  { name: "Gabriel Magalhaes", position: "DEF", nationality: "Brazil", current_club: "Arsenal", team: "Brazil" },
+  { name: "Danilo", position: "DEF", nationality: "Brazil", current_club: "Juventus", team: "Brazil" },
 
   { name: "Cristiano Ronaldo", position: "FWD", nationality: "Portugal", current_club: "Al Nassr", team: "Portugal" },
   { name: "Rafael Leao", position: "FWD", nationality: "Portugal", current_club: "AC Milan", team: "Portugal" },
@@ -106,6 +130,11 @@ const players: PlayerSeed[] = [
   { name: "Ruben Dias", position: "DEF", nationality: "Portugal", current_club: "Manchester City", team: "Portugal" },
   { name: "Nuno Mendes", position: "DEF", nationality: "Portugal", current_club: "Paris Saint-Germain", team: "Portugal" },
   { name: "Diogo Costa", position: "GK", nationality: "Portugal", current_club: "FC Porto", team: "Portugal" },
+  { name: "Joao Felix", position: "FWD", nationality: "Portugal", current_club: "Chelsea", team: "Portugal" },
+  { name: "Goncalo Ramos", position: "FWD", nationality: "Portugal", current_club: "Paris Saint-Germain", team: "Portugal" },
+  { name: "Vitinha", position: "MID", nationality: "Portugal", current_club: "Paris Saint-Germain", team: "Portugal" },
+  { name: "Pepe", position: "DEF", nationality: "Portugal", current_club: "FC Porto", team: "Portugal" },
+  { name: "Joao Cancelo", position: "DEF", nationality: "Portugal", current_club: "Al Hilal", team: "Portugal" },
 
   { name: "Lamine Yamal", position: "FWD", nationality: "Spain", current_club: "Barcelona", team: "Spain" },
   { name: "Alvaro Morata", position: "FWD", nationality: "Spain", current_club: "AC Milan", team: "Spain" },
@@ -115,6 +144,11 @@ const players: PlayerSeed[] = [
   { name: "Aymeric Laporte", position: "DEF", nationality: "Spain", current_club: "Al Nassr", team: "Spain" },
   { name: "Dani Carvajal", position: "DEF", nationality: "Spain", current_club: "Real Madrid", team: "Spain" },
   { name: "Unai Simon", position: "GK", nationality: "Spain", current_club: "Athletic Club", team: "Spain" },
+  { name: "Dani Olmo", position: "MID", nationality: "Spain", current_club: "Barcelona", team: "Spain" },
+  { name: "Mikel Oyarzabal", position: "FWD", nationality: "Spain", current_club: "Real Sociedad", team: "Spain" },
+  { name: "Fabian Ruiz", position: "MID", nationality: "Spain", current_club: "Paris Saint-Germain", team: "Spain" },
+  { name: "Pau Cubarsi", position: "DEF", nationality: "Spain", current_club: "Barcelona", team: "Spain" },
+  { name: "Alejandro Grimaldo", position: "DEF", nationality: "Spain", current_club: "Bayer Leverkusen", team: "Spain" },
 
   { name: "Erling Haaland", position: "FWD", nationality: "Norway", current_club: "Manchester City", team: "Norway" },
   { name: "Alexander Sorloth", position: "FWD", nationality: "Norway", current_club: "Atletico Madrid", team: "Norway" },
@@ -124,6 +158,11 @@ const players: PlayerSeed[] = [
   { name: "Leo Ostigard", position: "DEF", nationality: "Norway", current_club: "Rennes", team: "Norway" },
   { name: "Kristoffer Ajer", position: "DEF", nationality: "Norway", current_club: "Brentford", team: "Norway" },
   { name: "Orjan Nyland", position: "GK", nationality: "Norway", current_club: "Sevilla", team: "Norway" },
+  { name: "Oscar Bobb", position: "FWD", nationality: "Norway", current_club: "Manchester City", team: "Norway" },
+  { name: "Jorgen Strand Larsen", position: "FWD", nationality: "Norway", current_club: "Wolves", team: "Norway" },
+  { name: "Morten Thorsby", position: "MID", nationality: "Norway", current_club: "Genoa", team: "Norway" },
+  { name: "Julian Ryerson", position: "DEF", nationality: "Norway", current_club: "Borussia Dortmund", team: "Norway" },
+  { name: "Fredrik Aursnes", position: "MID", nationality: "Norway", current_club: "Benfica", team: "Norway" },
 
   { name: "Mohamed Salah", position: "FWD", nationality: "Egypt", current_club: "Liverpool", team: "Egypt" },
   { name: "Mostafa Mohamed", position: "FWD", nationality: "Egypt", current_club: "Nantes", team: "Egypt" },
@@ -133,15 +172,49 @@ const players: PlayerSeed[] = [
   { name: "Ahmed Hegazi", position: "DEF", nationality: "Egypt", current_club: "Al Ittihad", team: "Egypt" },
   { name: "Mohamed Abdelmonem", position: "DEF", nationality: "Egypt", current_club: "Nice", team: "Egypt" },
   { name: "Mohamed El Shenawy", position: "GK", nationality: "Egypt", current_club: "Al Ahly", team: "Egypt" },
+  { name: "Ahmed Sayed Zizo", position: "MID", nationality: "Egypt", current_club: "Zamalek", team: "Egypt" },
+  { name: "Ramadan Sobhi", position: "MID", nationality: "Egypt", current_club: "Pyramids", team: "Egypt" },
+  { name: "Emam Ashour", position: "MID", nationality: "Egypt", current_club: "Al Ahly", team: "Egypt" },
+  { name: "Hamdi Fathy", position: "MID", nationality: "Egypt", current_club: "Al Wakrah", team: "Egypt" },
+  { name: "Ali Gabr", position: "DEF", nationality: "Egypt", current_club: "Pyramids", team: "Egypt" },
 ];
 
 const fixtures: FixtureSeed[] = [
-  { home: "France", away: "England", match_date: "2026-06-13T18:00:00Z" },
-  { home: "Argentina", away: "Brazil", match_date: "2026-06-14T19:00:00Z" },
-  { home: "Portugal", away: "Spain", match_date: "2026-06-15T20:00:00Z" },
-  { home: "Norway", away: "Egypt", match_date: "2026-06-16T17:00:00Z" },
-  { home: "France", away: "Argentina", match_date: "2026-06-19T19:30:00Z" },
-  { home: "England", away: "Brazil", match_date: "2026-06-20T19:30:00Z" },
+  {
+    home: "France",
+    away: "Egypt",
+    match_date: "2026-06-11T18:00:00Z",
+    status: "finished",
+    score_home: 2,
+    score_away: 0,
+  },
+  {
+    home: "England",
+    away: "Norway",
+    match_date: "2026-06-12T19:00:00Z",
+    status: "finished",
+    score_home: 2,
+    score_away: 1,
+  },
+  {
+    home: "Argentina",
+    away: "Portugal",
+    match_date: "2026-06-12T21:00:00Z",
+    status: "finished",
+    score_home: 1,
+    score_away: 1,
+  },
+  { home: "France", away: "England", match_date: "2026-06-13T18:00:00Z", status: "scheduled" },
+  { home: "Argentina", away: "Brazil", match_date: "2026-06-14T19:00:00Z", status: "scheduled" },
+  { home: "Portugal", away: "Spain", match_date: "2026-06-15T20:00:00Z", status: "scheduled" },
+  { home: "Norway", away: "Egypt", match_date: "2026-06-16T17:00:00Z", status: "scheduled" },
+  { home: "France", away: "Argentina", match_date: "2026-06-19T19:30:00Z", status: "scheduled" },
+  { home: "England", away: "Brazil", match_date: "2026-06-20T19:30:00Z", status: "scheduled" },
+  { home: "Spain", away: "Norway", match_date: "2026-06-21T17:30:00Z", status: "scheduled" },
+  { home: "Portugal", away: "Egypt", match_date: "2026-06-21T20:00:00Z", status: "scheduled" },
+  { home: "Brazil", away: "France", match_date: "2026-06-23T19:30:00Z", status: "scheduled" },
+  { home: "England", away: "Spain", match_date: "2026-06-24T19:30:00Z", status: "scheduled" },
+  { home: "Argentina", away: "Norway", match_date: "2026-06-25T19:30:00Z", status: "scheduled" },
 ];
 
 const personaCaptains: Record<Persona, string[]> = {
@@ -213,6 +286,10 @@ function getServiceRoleClient() {
   });
 }
 
+function createPlayerAvatar(name: string) {
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=A8CABA&color=0A3D2A&size=256&rounded=true`;
+}
+
 export async function runSeed(): Promise<SeedResult> {
   const supabase = getServiceRoleClient();
 
@@ -255,7 +332,7 @@ export async function runSeed(): Promise<SeedResult> {
     nationality: player.nationality,
     current_club: player.current_club,
     sofascore_id: player.sofascore_id ?? null,
-    photo_url: null as string | null,
+    photo_url: player.photo_url ?? createPlayerAvatar(player.name),
     is_active: true,
   }));
 
@@ -273,9 +350,9 @@ export async function runSeed(): Promise<SeedResult> {
     home_team_id: teamIdByName.get(fixture.home),
     away_team_id: teamIdByName.get(fixture.away),
     match_date: fixture.match_date,
-    status: "scheduled" as const,
-    score_home: null as number | null,
-    score_away: null as number | null,
+    status: fixture.status ?? "scheduled",
+    score_home: fixture.score_home ?? null,
+    score_away: fixture.score_away ?? null,
   }));
 
   const invalidFixture = fixturePayload.find((fixture) => !fixture.home_team_id || !fixture.away_team_id);

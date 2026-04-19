@@ -8,6 +8,7 @@ import {
   DragOverEvent,
   DragStartEvent,
   PointerSensor,
+  TouchSensor,
   closestCenter,
   useSensor,
   useSensors,
@@ -19,7 +20,7 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { ChevronDown, Sparkles } from "lucide-react";
+import { ChevronDown, GripVertical, Sparkles } from "lucide-react";
 
 import {
   assistantTemplates,
@@ -108,15 +109,22 @@ function SortablePlayerCard({ player, size = "starting", onOpenDetails }: Player
       ref={setNodeRef}
       style={style}
       className={cn(
-        "relative cursor-grab rounded-3xl border border-border/70 bg-card/95 p-3 shadow-soft",
+        "relative rounded-3xl border border-border/70 bg-card/95 p-3.5 shadow-soft",
         "transition-all duration-300 hover:-translate-y-0.5 hover:shadow-glow active:cursor-grabbing",
         isDragging && "scale-[1.02] shadow-glow ring-2 ring-gold/40",
         size === "bench" && "min-w-[140px]",
       )}
       {...attributes}
-      {...listeners}
       onClick={() => onOpenDetails(player)}
     >
+      <button
+        type="button"
+        aria-label={`Drag ${player.name}`}
+        className="absolute right-2 top-2 inline-flex h-7 w-7 items-center justify-center rounded-full border border-border/70 bg-offwhite text-charcoal/70"
+        {...listeners}
+      >
+        <GripVertical className="h-3.5 w-3.5" />
+      </button>
       <div className="flex items-center gap-3">
         <Image
           src={player.photoUrl}
@@ -180,7 +188,12 @@ export function RosterManagerClient({
     assistantTemplates[persona].roster_health[0]!,
   );
 
-  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 4 } }));
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 120, tolerance: 8 },
+    }),
+  );
 
   const findContainer = (playerId: string): ContainerType | null => {
     if (starting.some((player) => player.id === playerId)) return "starting";
@@ -281,7 +294,7 @@ export function RosterManagerClient({
   const activeFunctionTitle = assistantFunctionMeta.roster_health.title;
 
   return (
-    <section className="space-y-6">
+    <section className="space-y-5 sm:space-y-6">
       <header className="rounded-3xl border border-border/70 bg-card/90 p-6 shadow-soft sm:p-8">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
@@ -473,7 +486,7 @@ export function RosterManagerClient({
           </SheetHeader>
           <div className="px-6 pb-6">
             <div className="rounded-2xl border border-border/70 bg-offwhite p-4 text-sm text-charcoal">
-              Transfer Market coming in Step 8
+              Transfer Market is opening soon. You can already prepare swaps in the Trade Market.
             </div>
           </div>
         </SheetContent>
