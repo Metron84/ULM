@@ -1,0 +1,242 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* -----------------------------------------------------------
+ * Ultimate League Manager - Brand Palette
+ * Forest (primary), Sage (accent), Gold (reward),
+ * Off-white (background), Charcoal (foreground), Neutral border.
+ * ----------------------------------------------------------- */
+
+@theme inline {
+  /* Brand tokens - direct hex access */
+  --color-forest: #0a3d2a;
+  --color-forest-50: #f0f5f1;
+  --color-forest-100: #d8e5dd;
+  --color-forest-200: #b0c9b9;
+  --color-forest-500: #0a3d2a;
+  --color-forest-600: #083322;
+  --color-forest-700: #06281b;
+
+  --color-sage: #a8caba;
+  --color-sage-50: #f2f8f5;
+  --color-sage-100: #e3efe7;
+  --color-sage-200: #c8dfd2;
+  --color-sage-500: #a8caba;
+  --color-sage-600: #87b29f;
+
+  --color-gold: #d4af77;
+  --color-gold-50: #fbf5ec;
+  --color-gold-100: #f4e4c9;
+  --color-gold-500: #d4af77;
+  --color-gold-600: #b8925a;
+  --color-gold-700: #8a6a3f;
+
+  --color-offwhite: #f8f5f0;
+  --color-charcoal: #2c2c2c;
+  --color-line: #e5e0d8;
+
+  /* Semantic shadcn tokens mapped to brand palette */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-reward: var(--reward);
+  --color-reward-foreground: var(--reward-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-heading: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+
+  --shadow-soft: 0 1px 2px rgba(10, 61, 42, 0.04), 0 8px 24px -12px rgba(10, 61, 42, 0.08);
+  --shadow-glow: 0 20px 60px -20px rgba(10, 61, 42, 0.25);
+}
+
+/* -----------------------------------------------------------
+ * Light theme (default) - premium, tranquil, warm off-white
+ * ----------------------------------------------------------- */
+:root {
+  --radius: 1rem;
+
+  --background: #f8f5f0;
+  --foreground: #2c2c2c;
+
+  --card: #ffffff;
+  --card-foreground: #2c2c2c;
+
+  --popover: #ffffff;
+  --popover-foreground: #2c2c2c;
+
+  --primary: #0a3d2a;
+  --primary-foreground: #f8f5f0;
+
+  --secondary: #e3efe7;
+  --secondary-foreground: #0a3d2a;
+
+  --muted: #efeae2;
+  --muted-foreground: #6b6b6b;
+
+  --accent: #a8caba;
+  --accent-foreground: #0a3d2a;
+
+  --reward: #d4af77;
+  --reward-foreground: #2c2c2c;
+
+  --destructive: oklch(0.577 0.245 27.325);
+
+  --border: #e5e0d8;
+  --input: #e5e0d8;
+  --ring: #a8caba;
+
+  --chart-1: #0a3d2a;
+  --chart-2: #a8caba;
+  --chart-3: #d4af77;
+  --chart-4: #87b29f;
+  --chart-5: #b8925a;
+
+  --sidebar: #ffffff;
+  --sidebar-foreground: #2c2c2c;
+  --sidebar-primary: #0a3d2a;
+  --sidebar-primary-foreground: #f8f5f0;
+  --sidebar-accent: #e3efe7;
+  --sidebar-accent-foreground: #0a3d2a;
+  --sidebar-border: #e5e0d8;
+  --sidebar-ring: #a8caba;
+}
+
+/* -----------------------------------------------------------
+ * Dark theme - deep forest tones
+ * ----------------------------------------------------------- */
+.dark {
+  --background: #06281b;
+  --foreground: #f2f8f5;
+
+  --card: #0a3d2a;
+  --card-foreground: #f2f8f5;
+
+  --popover: #0a3d2a;
+  --popover-foreground: #f2f8f5;
+
+  --primary: #a8caba;
+  --primary-foreground: #06281b;
+
+  --secondary: #0f4a33;
+  --secondary-foreground: #f2f8f5;
+
+  --muted: #0f4a33;
+  --muted-foreground: #c8dfd2;
+
+  --accent: #a8caba;
+  --accent-foreground: #06281b;
+
+  --reward: #d4af77;
+  --reward-foreground: #06281b;
+
+  --destructive: oklch(0.704 0.191 22.216);
+
+  --border: rgba(168, 202, 186, 0.15);
+  --input: rgba(168, 202, 186, 0.2);
+  --ring: #a8caba;
+
+  --sidebar: #0a3d2a;
+  --sidebar-foreground: #f2f8f5;
+  --sidebar-primary: #a8caba;
+  --sidebar-primary-foreground: #06281b;
+  --sidebar-accent: #0f4a33;
+  --sidebar-accent-foreground: #f2f8f5;
+  --sidebar-border: rgba(168, 202, 186, 0.15);
+  --sidebar-ring: #a8caba;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    @apply font-sans antialiased;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1, "ss01" 1;
+  }
+
+  ::selection {
+    background: var(--color-sage-200);
+    color: var(--color-forest);
+  }
+}
+
+@layer utilities {
+  .bg-pitch-gradient {
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(168, 202, 186, 0.25), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 100% 100%, rgba(212, 175, 119, 0.15), transparent 70%),
+      var(--color-offwhite);
+  }
+
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+
+  .demo-fade-in {
+    animation: demo-fade-in 380ms ease-out both;
+  }
+}
+
+@keyframes demo-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
