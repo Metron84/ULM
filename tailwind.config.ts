@@ -15,18 +15,18 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        forest: "#0A3D2A",
-        sage: "#A8CABA",
-        gold: "#D4AF77",
-        offwhite: "#F8F5F0",
-        charcoal: "#2C2C2C",
-        line: "#E5E0D8",
+        forest: "#1F2937",
+        sage: "#1E3A8A",
+        gold: "#3B82F6",
+        offwhite: "#F8FAFC",
+        charcoal: "#6B7280",
+        line: "#E5E7EB",
 
-        primary: "#0A3D2A",
-        accent: "#A8CABA",
-        reward: "#D4AF77",
-        background: "#F8F5F0",
-        foreground: "#2C2C2C",
+        primary: "#1E3A8A",
+        accent: "#3B82F6",
+        reward: "#3B82F6",
+        background: "#F8FAFC",
+        foreground: "#1F2937",
       },
       fontFamily: {
         sans: ["var(--font-inter)", "ui-sans-serif", "system-ui", "sans-serif"],
@@ -37,8 +37,8 @@ const config: Config = {
         "3xl": "1.75rem",
       },
       boxShadow: {
-        soft: "0 1px 2px rgba(10,61,42,0.04), 0 8px 24px -12px rgba(10,61,42,0.08)",
-        glow: "0 20px 60px -20px rgba(10,61,42,0.25)",
+        soft: "0 1px 2px rgba(15,23,42,0.06), 0 10px 24px -16px rgba(15,23,42,0.18)",
+        glow: "0 18px 40px -24px rgba(30,58,138,0.35)",
       },
     },
   },

@@ -25,8 +25,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#F8F5F0" },
-    { media: "(prefers-color-scheme: dark)", color: "#06281B" },
+    { media: "(prefers-color-scheme: light)", color: "#F8FAFC" },
+    { media: "(prefers-color-scheme: dark)", color: "#111827" },
   ],
   width: "device-width",
   initialScale: 1,
@@ -53,7 +53,7 @@ export default async function RootLayout({
         className="min-h-full bg-background text-foreground antialiased font-sans"
         data-auth-state={authState}
       >
-        <div className="sticky top-0 z-40 border-b border-sage/30 bg-sage/35 px-4 py-1.5 text-center text-[11px] font-medium tracking-wide text-forest/80">
+        <div className="sticky top-0 z-40 border-b border-primary/20 bg-primary/10 px-4 py-1.5 text-center text-[11px] font-medium tracking-wide text-foreground/80">
           Interactive Demo - World Cup 2026
         </div>
         <div className="flex min-h-[calc(100vh-29px)] flex-col">{children}</div>

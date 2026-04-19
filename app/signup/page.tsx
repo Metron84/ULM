@@ -61,7 +61,7 @@ export default function SignupPage() {
       >
         <div className="mb-8 flex flex-col items-center text-center">
           <Logo size="md" className="mb-4 justify-center" />
-          <h1 className="text-3xl font-bold tracking-tight text-forest">Create account</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">Create account</h1>
           <p className="mt-2 text-sm text-muted-foreground">
             Build your league command center in minutes.
           </p>
@@ -69,7 +69,7 @@ export default function SignupPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <label htmlFor="displayName" className="text-sm font-medium text-charcoal">
+            <label htmlFor="displayName" className="text-sm font-medium text-foreground">
               Display name
             </label>
             <input
@@ -81,12 +81,12 @@ export default function SignupPage() {
               placeholder="Manager Name"
               className={cn(
                 "h-12 w-full rounded-2xl border border-border bg-background px-4 text-sm",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
               )}
             />
           </div>
           <div className="space-y-2">
-            <label htmlFor="email" className="text-sm font-medium text-charcoal">
+            <label htmlFor="email" className="text-sm font-medium text-foreground">
               Email
             </label>
             <input
@@ -98,12 +98,12 @@ export default function SignupPage() {
               placeholder="you@club.com"
               className={cn(
                 "h-12 w-full rounded-2xl border border-border bg-background px-4 text-sm",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
               )}
             />
           </div>
           <div className="space-y-2">
-            <label htmlFor="password" className="text-sm font-medium text-charcoal">
+            <label htmlFor="password" className="text-sm font-medium text-foreground">
               Password
             </label>
             <input
@@ -116,7 +116,7 @@ export default function SignupPage() {
               placeholder="At least 8 characters"
               className={cn(
                 "h-12 w-full rounded-2xl border border-border bg-background px-4 text-sm",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
               )}
             />
           </div>
@@ -125,7 +125,7 @@ export default function SignupPage() {
             type="submit"
             disabled={isLoading}
             className={cn(
-              "mt-2 inline-flex h-12 w-full items-center justify-center rounded-2xl bg-forest px-4 text-sm font-semibold text-offwhite",
+              "mt-2 inline-flex h-12 w-full items-center justify-center rounded-2xl bg-primary px-4 text-sm font-semibold text-primary-foreground",
               "shadow-soft transition-all duration-200 hover:-translate-y-0.5 hover:shadow-glow",
               "disabled:pointer-events-none disabled:opacity-60",
             )}
@@ -140,7 +140,7 @@ export default function SignupPage() {
 
         <p className="mt-6 text-center text-sm text-muted-foreground">
           Already have an account?{" "}
-          <Link href="/login" className="font-semibold text-forest hover:underline">
+          <Link href="/login" className="font-semibold text-primary hover:underline">
             Sign in
           </Link>
         </p>

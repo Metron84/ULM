@@ -25,7 +25,7 @@ const cards: PersonaCard[] = [
     title: "The Analyst",
     subtitle: "Data-driven, calm, always logical",
     bio: "Stats, trends, projections — your tactical brain.",
-    accentClass: "bg-sage/45",
+    accentClass: "bg-secondary/50",
   },
   {
     persona: "diehard_fan",
@@ -33,7 +33,7 @@ const cards: PersonaCard[] = [
     title: "The Die-Hard Fan",
     subtitle: "Passionate, energetic, lives for the atmosphere",
     bio: "Gut feel, energy, and matchday vibes.",
-    accentClass: "bg-gold/45",
+    accentClass: "bg-primary/10",
   },
   {
     persona: "fantasy_veteran",
@@ -41,7 +41,7 @@ const cards: PersonaCard[] = [
     title: "The Fantasy Veteran",
     subtitle: "Competitive, strategic, rank-climbing expert",
     bio: "Differentials, long-term strategy, and winning moves.",
-    accentClass: "bg-forest/90 text-offwhite",
+    accentClass: "bg-primary text-primary-foreground",
   },
 ];
 
@@ -105,13 +105,13 @@ export function PersonaSelectionClient() {
   };
 
   return (
-    <main className="min-h-screen bg-offwhite px-6 py-10 sm:px-10 sm:py-14">
+    <main className="min-h-screen bg-background px-6 py-10 sm:px-10 sm:py-14">
       <section className="mx-auto flex w-full max-w-5xl flex-col">
         <header className="mb-10 max-w-3xl">
-          <h1 className="text-[28px] font-bold leading-tight text-forest">
+          <h1 className="text-[28px] font-bold leading-tight text-foreground">
             Choose Your Assistant Manager
           </h1>
-          <p className="mt-3 text-base text-charcoal">
+          <p className="mt-3 text-base text-muted-foreground">
             They&apos;ll be with you every matchday — pick the voice that feels right.
           </p>
         </header>
@@ -127,10 +127,10 @@ export function PersonaSelectionClient() {
                 className={cn(
                   "group relative min-h-[300px] rounded-3xl border border-border/80 p-6 text-left",
                   "shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-glow",
-                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold",
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                   card.accentClass,
                   active &&
-                    "scale-[1.02] ring-2 ring-gold shadow-[0_0_0_1px_rgba(212,175,119,0.45),0_22px_60px_-22px_rgba(212,175,119,0.9)]",
+                    "scale-[1.02] ring-2 ring-primary shadow-[0_0_0_1px_rgba(30,58,138,0.35),0_22px_60px_-22px_rgba(30,58,138,0.6)]",
                 )}
                 aria-pressed={active}
               >
@@ -142,8 +142,8 @@ export function PersonaSelectionClient() {
                   className={cn(
                     "mt-2 text-sm",
                     active && card.persona === "fantasy_veteran"
-                      ? "text-offwhite/90"
-                      : "text-charcoal/80",
+                      ? "text-primary-foreground/90"
+                      : "text-muted-foreground",
                   )}
                 >
                   {card.subtitle}
@@ -152,8 +152,8 @@ export function PersonaSelectionClient() {
                   className={cn(
                     "mt-5 text-sm leading-relaxed",
                     active && card.persona === "fantasy_veteran"
-                      ? "text-offwhite/95"
-                      : "text-charcoal/90",
+                      ? "text-primary-foreground/95"
+                      : "text-foreground/90",
                   )}
                 >
                   {card.bio}
@@ -169,9 +169,9 @@ export function PersonaSelectionClient() {
             onClick={handleContinue}
             disabled={saving}
             className={cn(
-              "inline-flex h-14 w-full items-center justify-center rounded-3xl bg-sage px-6 text-base font-semibold text-gold sm:w-auto sm:min-w-[360px]",
+              "inline-flex h-14 w-full items-center justify-center rounded-3xl bg-primary px-6 text-base font-semibold text-primary-foreground sm:w-auto sm:min-w-[360px]",
               "shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-glow",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
               "disabled:pointer-events-none disabled:opacity-60",
             )}
           >

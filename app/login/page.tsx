@@ -53,7 +53,7 @@ export default function LoginPage() {
       >
         <div className="mb-8 flex flex-col items-center text-center">
           <Logo size="md" className="mb-4 justify-center" />
-          <h1 className="text-3xl font-bold tracking-tight text-forest">Welcome back</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">Welcome back</h1>
           <p className="mt-2 text-sm text-muted-foreground">
             Sign in to continue your matchday flow.
           </p>
@@ -61,7 +61,7 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <label htmlFor="email" className="text-sm font-medium text-charcoal">
+            <label htmlFor="email" className="text-sm font-medium text-foreground">
               Email
             </label>
             <input
@@ -73,12 +73,12 @@ export default function LoginPage() {
               placeholder="you@club.com"
               className={cn(
                 "h-12 w-full rounded-2xl border border-border bg-background px-4 text-sm",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
               )}
             />
           </div>
           <div className="space-y-2">
-            <label htmlFor="password" className="text-sm font-medium text-charcoal">
+            <label htmlFor="password" className="text-sm font-medium text-foreground">
               Password
             </label>
             <input
@@ -90,7 +90,7 @@ export default function LoginPage() {
               placeholder="Your password"
               className={cn(
                 "h-12 w-full rounded-2xl border border-border bg-background px-4 text-sm",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
               )}
             />
           </div>
@@ -99,7 +99,7 @@ export default function LoginPage() {
             type="submit"
             disabled={isLoading}
             className={cn(
-              "mt-2 inline-flex h-12 w-full items-center justify-center rounded-2xl bg-forest px-4 text-sm font-semibold text-offwhite",
+              "mt-2 inline-flex h-12 w-full items-center justify-center rounded-2xl bg-primary px-4 text-sm font-semibold text-primary-foreground",
               "shadow-soft transition-all duration-200 hover:-translate-y-0.5 hover:shadow-glow",
               "disabled:pointer-events-none disabled:opacity-60",
             )}
@@ -114,7 +114,7 @@ export default function LoginPage() {
 
         <p className="mt-6 text-center text-sm text-muted-foreground">
           New to ULM?{" "}
-          <Link href="/signup" className="font-semibold text-forest hover:underline">
+          <Link href="/signup" className="font-semibold text-primary hover:underline">
             Create your account
           </Link>
         </p>

@@ -50,14 +50,14 @@ export async function MainLayout({ children }: MainLayoutProps) {
 
   return (
     <ProtectedRoute mode="persona-required">
-      <div className="min-h-screen bg-offwhite pb-28 demo-fade-in lg:pb-8">
-        <header className="sticky top-[29px] z-30 border-b border-border/70 bg-offwhite/90 backdrop-blur">
+      <div className="min-h-screen bg-background pb-28 demo-fade-in lg:pb-8">
+        <header className="sticky top-[29px] z-30 border-b border-border/70 bg-background/90 backdrop-blur">
           <div className="mx-auto flex w-full max-w-[1320px] items-center justify-between px-4 py-5 sm:px-6 lg:px-8">
             <div>
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-forest/60">
+              <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
                 Ultimate League Manager
               </p>
-              <h1 className="mt-1 text-base font-semibold text-forest sm:text-lg">
+              <h1 className="mt-1 text-base font-semibold text-foreground sm:text-lg">
                 {displayName}
               </h1>
             </div>
@@ -66,14 +66,14 @@ export async function MainLayout({ children }: MainLayoutProps) {
               href="/assistant"
               className={cn(
                 "inline-flex items-center gap-2 rounded-2xl border border-border bg-card px-3 py-2 shadow-soft",
-                "transition-all duration-200 hover:-translate-y-0.5 hover:bg-sage/20",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold",
+                "transition-all duration-200 hover:-translate-y-0.5 hover:bg-secondary/50",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
               )}
             >
               <span className="text-lg" aria-hidden="true">
                 {personaEmoji(persona)}
               </span>
-              <Badge variant="outline" className="rounded-xl border-border text-xs text-forest">
+              <Badge variant="outline" className="rounded-xl border-border text-xs text-foreground">
                 {personaLabel(persona)}
               </Badge>
             </Link>
@@ -88,11 +88,11 @@ export async function MainLayout({ children }: MainLayoutProps) {
         </div>
 
         <footer className="mx-auto w-full max-w-[1320px] px-4 pb-24 sm:px-6 lg:px-8 lg:pb-8">
-          <div className="rounded-3xl border border-border/70 bg-card/85 p-4 text-center text-sm text-charcoal/75 shadow-soft">
+          <div className="rounded-3xl border border-border/70 bg-card/85 p-4 text-center text-sm text-muted-foreground shadow-soft">
             Need help?{" "}
             <a
               href="mailto:info@metronventures.com"
-              className="font-semibold text-forest underline decoration-gold/70 underline-offset-4"
+              className="font-semibold text-primary underline decoration-primary/60 underline-offset-4"
             >
               info@metronventures.com
             </a>

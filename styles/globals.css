@@ -5,38 +5,37 @@
 @custom-variant dark (&:is(.dark *));
 
 /* -----------------------------------------------------------
- * Ultimate League Manager - Brand Palette
- * Forest (primary), Sage (accent), Gold (reward),
- * Off-white (background), Charcoal (foreground), Neutral border.
+ * Ultimate League Manager - Blue light design system
+ * Contrast-first typography + functional color accents.
  * ----------------------------------------------------------- */
 
 @theme inline {
-  /* Brand tokens - direct hex access */
-  --color-forest: #0a3d2a;
-  --color-forest-50: #f0f5f1;
-  --color-forest-100: #d8e5dd;
-  --color-forest-200: #b0c9b9;
-  --color-forest-500: #0a3d2a;
-  --color-forest-600: #083322;
-  --color-forest-700: #06281b;
+  /* Legacy aliases remapped to the new system */
+  --color-forest: #1f2937;
+  --color-forest-50: #f8fafc;
+  --color-forest-100: #eff6ff;
+  --color-forest-200: #dbeafe;
+  --color-forest-500: #1f2937;
+  --color-forest-600: #111827;
+  --color-forest-700: #0f172a;
 
-  --color-sage: #a8caba;
-  --color-sage-50: #f2f8f5;
-  --color-sage-100: #e3efe7;
-  --color-sage-200: #c8dfd2;
-  --color-sage-500: #a8caba;
-  --color-sage-600: #87b29f;
+  --color-sage: #1e3a8a;
+  --color-sage-50: #eff6ff;
+  --color-sage-100: #dbeafe;
+  --color-sage-200: #bfdbfe;
+  --color-sage-500: #1e3a8a;
+  --color-sage-600: #1d4ed8;
 
-  --color-gold: #d4af77;
-  --color-gold-50: #fbf5ec;
-  --color-gold-100: #f4e4c9;
-  --color-gold-500: #d4af77;
-  --color-gold-600: #b8925a;
-  --color-gold-700: #8a6a3f;
+  --color-gold: #3b82f6;
+  --color-gold-50: #eff6ff;
+  --color-gold-100: #dbeafe;
+  --color-gold-500: #3b82f6;
+  --color-gold-600: #2563eb;
+  --color-gold-700: #1d4ed8;
 
-  --color-offwhite: #f8f5f0;
-  --color-charcoal: #2c2c2c;
-  --color-line: #e5e0d8;
+  --color-offwhite: #f8fafc;
+  --color-charcoal: #6b7280;
+  --color-line: #e5e7eb;
 
   /* Semantic shadcn tokens mapped to brand palette */
   --color-background: var(--background);
@@ -86,104 +85,104 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
 
-  --shadow-soft: 0 1px 2px rgba(10, 61, 42, 0.04), 0 8px 24px -12px rgba(10, 61, 42, 0.08);
-  --shadow-glow: 0 20px 60px -20px rgba(10, 61, 42, 0.25);
+  --shadow-soft: 0 1px 2px rgba(15, 23, 42, 0.06), 0 10px 24px -16px rgba(15, 23, 42, 0.18);
+  --shadow-glow: 0 18px 40px -24px rgba(30, 58, 138, 0.35);
 }
 
 /* -----------------------------------------------------------
- * Light theme (default) - premium, tranquil, warm off-white
+ * Light theme (default) - professional dashboard palette
  * ----------------------------------------------------------- */
 :root {
   --radius: 1rem;
 
-  --background: #f8f5f0;
-  --foreground: #2c2c2c;
+  --background: #f8fafc;
+  --foreground: #1f2937;
 
   --card: #ffffff;
-  --card-foreground: #2c2c2c;
+  --card-foreground: #1f2937;
 
   --popover: #ffffff;
-  --popover-foreground: #2c2c2c;
+  --popover-foreground: #1f2937;
 
-  --primary: #0a3d2a;
-  --primary-foreground: #f8f5f0;
+  --primary: #1e3a8a;
+  --primary-foreground: #f8fafc;
 
-  --secondary: #e3efe7;
-  --secondary-foreground: #0a3d2a;
+  --secondary: #dbeafe;
+  --secondary-foreground: #1e3a8a;
 
-  --muted: #efeae2;
-  --muted-foreground: #6b6b6b;
+  --muted: #eef2f7;
+  --muted-foreground: #6b7280;
 
-  --accent: #a8caba;
-  --accent-foreground: #0a3d2a;
+  --accent: #3b82f6;
+  --accent-foreground: #f8fafc;
 
-  --reward: #d4af77;
-  --reward-foreground: #2c2c2c;
+  --reward: #3b82f6;
+  --reward-foreground: #f8fafc;
 
   --destructive: oklch(0.577 0.245 27.325);
 
-  --border: #e5e0d8;
-  --input: #e5e0d8;
-  --ring: #a8caba;
+  --border: #e5e7eb;
+  --input: #e5e7eb;
+  --ring: #3b82f6;
 
-  --chart-1: #0a3d2a;
-  --chart-2: #a8caba;
-  --chart-3: #d4af77;
-  --chart-4: #87b29f;
-  --chart-5: #b8925a;
+  --chart-1: #1e3a8a;
+  --chart-2: #3b82f6;
+  --chart-3: #60a5fa;
+  --chart-4: #93c5fd;
+  --chart-5: #1d4ed8;
 
   --sidebar: #ffffff;
-  --sidebar-foreground: #2c2c2c;
-  --sidebar-primary: #0a3d2a;
-  --sidebar-primary-foreground: #f8f5f0;
-  --sidebar-accent: #e3efe7;
-  --sidebar-accent-foreground: #0a3d2a;
-  --sidebar-border: #e5e0d8;
-  --sidebar-ring: #a8caba;
+  --sidebar-foreground: #1f2937;
+  --sidebar-primary: #1e3a8a;
+  --sidebar-primary-foreground: #f8fafc;
+  --sidebar-accent: #eff6ff;
+  --sidebar-accent-foreground: #1e3a8a;
+  --sidebar-border: #e5e7eb;
+  --sidebar-ring: #3b82f6;
 }
 
 /* -----------------------------------------------------------
- * Dark theme - deep forest tones
+ * Dark theme - high contrast but soft whites
  * ----------------------------------------------------------- */
 .dark {
-  --background: #06281b;
-  --foreground: #f2f8f5;
+  --background: #111827;
+  --foreground: #e5e7eb;
 
-  --card: #0a3d2a;
-  --card-foreground: #f2f8f5;
+  --card: #1f2937;
+  --card-foreground: #f3f4f6;
 
-  --popover: #0a3d2a;
-  --popover-foreground: #f2f8f5;
+  --popover: #1f2937;
+  --popover-foreground: #f3f4f6;
 
-  --primary: #a8caba;
-  --primary-foreground: #06281b;
+  --primary: #60a5fa;
+  --primary-foreground: #0f172a;
 
-  --secondary: #0f4a33;
-  --secondary-foreground: #f2f8f5;
+  --secondary: #1e3a8a;
+  --secondary-foreground: #dbeafe;
 
-  --muted: #0f4a33;
-  --muted-foreground: #c8dfd2;
+  --muted: #334155;
+  --muted-foreground: #cbd5e1;
 
-  --accent: #a8caba;
-  --accent-foreground: #06281b;
+  --accent: #3b82f6;
+  --accent-foreground: #eff6ff;
 
-  --reward: #d4af77;
-  --reward-foreground: #06281b;
+  --reward: #60a5fa;
+  --reward-foreground: #eff6ff;
 
   --destructive: oklch(0.704 0.191 22.216);
 
-  --border: rgba(168, 202, 186, 0.15);
-  --input: rgba(168, 202, 186, 0.2);
-  --ring: #a8caba;
+  --border: rgba(148, 163, 184, 0.25);
+  --input: rgba(148, 163, 184, 0.25);
+  --ring: #60a5fa;
 
-  --sidebar: #0a3d2a;
-  --sidebar-foreground: #f2f8f5;
-  --sidebar-primary: #a8caba;
-  --sidebar-primary-foreground: #06281b;
-  --sidebar-accent: #0f4a33;
-  --sidebar-accent-foreground: #f2f8f5;
-  --sidebar-border: rgba(168, 202, 186, 0.15);
-  --sidebar-ring: #a8caba;
+  --sidebar: #0f172a;
+  --sidebar-foreground: #e5e7eb;
+  --sidebar-primary: #60a5fa;
+  --sidebar-primary-foreground: #0f172a;
+  --sidebar-accent: #1e293b;
+  --sidebar-accent-foreground: #e2e8f0;
+  --sidebar-border: rgba(148, 163, 184, 0.2);
+  --sidebar-ring: #60a5fa;
 }
 
 @layer base {
@@ -204,17 +203,17 @@
   }
 
   ::selection {
-    background: var(--color-sage-200);
-    color: var(--color-forest);
+    background: var(--color-sage-100);
+    color: var(--foreground);
   }
 }
 
 @layer utilities {
   .bg-pitch-gradient {
     background:
-      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(168, 202, 186, 0.25), transparent 60%),
-      radial-gradient(ellipse 60% 40% at 100% 100%, rgba(212, 175, 119, 0.15), transparent 70%),
-      var(--color-offwhite);
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(59, 130, 246, 0.12), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 100% 100%, rgba(30, 58, 138, 0.08), transparent 70%),
+      var(--background);
   }
 
   .shadow-soft {
