@@ -43,7 +43,7 @@ export default function RulesPage() {
             <CardTitle className="text-3xl font-bold tracking-tight text-forest sm:text-4xl">
               Rules &amp; Scoring
             </CardTitle>
-            <CardDescription className="mt-2 text-sm text-charcoal/75 sm:text-base">
+            <CardDescription className="mt-2 text-sm text-muted-foreground sm:text-base">
               Everything you need to know about ULM
             </CardDescription>
           </CardHeader>
@@ -56,7 +56,7 @@ export default function RulesPage() {
           <CardContent className="space-y-3 px-6">
             <div className="overflow-x-auto rounded-2xl border border-border/70">
               <table className="w-full min-w-[320px] text-sm">
-                <thead className="bg-offwhite text-left text-xs uppercase tracking-wide text-charcoal/60">
+                <thead className="bg-offwhite text-left text-xs uppercase tracking-wide text-muted-foreground">
                   <tr>
                     <th className="px-4 py-3 font-semibold">Action</th>
                     <th className="px-4 py-3 font-semibold">Points</th>
@@ -82,7 +82,7 @@ export default function RulesPage() {
           <CardContent className="space-y-3 px-6">
             <div className="overflow-x-auto rounded-2xl border border-border/70">
               <table className="w-full min-w-[520px] text-sm">
-                <thead className="bg-offwhite text-left text-xs uppercase tracking-wide text-charcoal/60">
+                <thead className="bg-offwhite text-left text-xs uppercase tracking-wide text-muted-foreground">
                   <tr>
                     <th className="px-4 py-3 font-semibold">Feature</th>
                     <th className="px-4 py-3 font-semibold">Draft Mode</th>
@@ -93,8 +93,8 @@ export default function RulesPage() {
                   {modeRows.map((row) => (
                     <tr key={row.feature}>
                       <td className="px-4 py-3 font-medium text-forest">{row.feature}</td>
-                      <td className="px-4 py-3 text-charcoal">{row.draft}</td>
-                      <td className="px-4 py-3 text-charcoal">{row.open}</td>
+                      <td className="px-4 py-3 text-foreground">{row.draft}</td>
+                      <td className="px-4 py-3 text-foreground">{row.open}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -108,7 +108,7 @@ export default function RulesPage() {
             <CardHeader className="px-6">
               <CardTitle className="text-xl text-forest">Roster Rules</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2 px-6 text-sm text-charcoal">
+            <CardContent className="space-y-2 px-6 text-sm text-foreground">
               <p>- Dynamic roster size is enforced by league and competition settings.</p>
               <p>- Starting players and bench are managed in roster controls.</p>
               <p>- Only one Captain and one Vice-Captain can be active at a time.</p>
@@ -120,7 +120,7 @@ export default function RulesPage() {
             <CardHeader className="px-6">
               <CardTitle className="text-xl text-forest">Predictions</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2 px-6 text-sm text-charcoal">
+            <CardContent className="space-y-2 px-6 text-sm text-foreground">
               <p>- Exact score + correct scorer = 2 points</p>
               <p>- Correct scorer only = 1 point</p>
               <p>- Correct outcome only = 1 point</p>
@@ -134,7 +134,7 @@ export default function RulesPage() {
             <CardHeader className="px-6">
               <CardTitle className="text-xl text-forest">Trades</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2 px-6 text-sm text-charcoal">
+            <CardContent className="space-y-2 px-6 text-sm text-foreground">
               <p>- Football-only items are allowed in trade offers and requests.</p>
               <p>- All trades are subject to commissioner review in managed leagues.</p>
               <p>- Commissioner decisions can include optional comments.</p>
@@ -145,7 +145,7 @@ export default function RulesPage() {
             <CardHeader className="px-6">
               <CardTitle className="text-xl text-forest">Assistant Manager</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2 px-6 text-sm text-charcoal">
+            <CardContent className="space-y-2 px-6 text-sm text-foreground">
               <p>- You can fire your assistant in settings at any time during the season.</p>
               <p>
                 - A new assistant can be appointed at the halfway point to the next season to
@@ -159,7 +159,7 @@ export default function RulesPage() {
           <CardHeader className="px-6">
             <CardTitle className="text-xl text-forest">League Types</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2 px-6 text-sm text-charcoal">
+          <CardContent className="space-y-2 px-6 text-sm text-foreground">
             <p>- Private leagues are invite-based and can use commissioner controls.</p>
             <p>- Public leagues are open for broader competition and leaderboard discovery.</p>
             <p>- Big 5 can run across all five leagues or selected individual leagues.</p>

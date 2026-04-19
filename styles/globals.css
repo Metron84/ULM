@@ -11,11 +11,11 @@
 
 @theme inline {
   /* Legacy aliases remapped to the new system */
-  --color-forest: #1f2937;
-  --color-forest-50: #f8fafc;
-  --color-forest-100: #eff6ff;
-  --color-forest-200: #dbeafe;
-  --color-forest-500: #1f2937;
+  --color-forest: #111827;
+  --color-forest-50: #eaf3ff;
+  --color-forest-100: #dbeafe;
+  --color-forest-200: #bfdbfe;
+  --color-forest-500: #111827;
   --color-forest-600: #111827;
   --color-forest-700: #0f172a;
 
@@ -26,16 +26,16 @@
   --color-sage-500: #1e3a8a;
   --color-sage-600: #1d4ed8;
 
-  --color-gold: #3b82f6;
-  --color-gold-50: #eff6ff;
-  --color-gold-100: #dbeafe;
-  --color-gold-500: #3b82f6;
-  --color-gold-600: #2563eb;
-  --color-gold-700: #1d4ed8;
+  --color-gold: #f59e0b;
+  --color-gold-50: #fffbeb;
+  --color-gold-100: #fef3c7;
+  --color-gold-500: #f59e0b;
+  --color-gold-600: #d97706;
+  --color-gold-700: #b45309;
 
-  --color-offwhite: #f8fafc;
-  --color-charcoal: #6b7280;
-  --color-line: #e5e7eb;
+  --color-offwhite: #eaf3ff;
+  --color-charcoal: #1f2937;
+  --color-line: #d6e4f5;
 
   /* Semantic shadcn tokens mapped to brand palette */
   --color-background: var(--background);
@@ -95,49 +95,49 @@
 :root {
   --radius: 1rem;
 
-  --background: #f8fafc;
-  --foreground: #1f2937;
+  --background: #eaf3ff;
+  --foreground: #111827;
 
   --card: #ffffff;
-  --card-foreground: #1f2937;
+  --card-foreground: #111827;
 
   --popover: #ffffff;
-  --popover-foreground: #1f2937;
+  --popover-foreground: #111827;
 
   --primary: #1e3a8a;
   --primary-foreground: #f8fafc;
 
-  --secondary: #dbeafe;
+  --secondary: #bfdbfe;
   --secondary-foreground: #1e3a8a;
 
-  --muted: #eef2f7;
-  --muted-foreground: #6b7280;
+  --muted: #dbeafe;
+  --muted-foreground: #1f2937;
 
   --accent: #3b82f6;
   --accent-foreground: #f8fafc;
 
-  --reward: #3b82f6;
-  --reward-foreground: #f8fafc;
+  --reward: #f59e0b;
+  --reward-foreground: #111827;
 
   --destructive: oklch(0.577 0.245 27.325);
 
-  --border: #e5e7eb;
-  --input: #e5e7eb;
+  --border: #d6e4f5;
+  --input: #d6e4f5;
   --ring: #3b82f6;
 
   --chart-1: #1e3a8a;
   --chart-2: #3b82f6;
-  --chart-3: #60a5fa;
+  --chart-3: #f59e0b;
   --chart-4: #93c5fd;
   --chart-5: #1d4ed8;
 
   --sidebar: #ffffff;
-  --sidebar-foreground: #1f2937;
+  --sidebar-foreground: #111827;
   --sidebar-primary: #1e3a8a;
   --sidebar-primary-foreground: #f8fafc;
   --sidebar-accent: #eff6ff;
   --sidebar-accent-foreground: #1e3a8a;
-  --sidebar-border: #e5e7eb;
+  --sidebar-border: #d6e4f5;
   --sidebar-ring: #3b82f6;
 }
 

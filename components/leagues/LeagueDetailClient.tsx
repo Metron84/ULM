@@ -16,7 +16,7 @@ type LeagueDetailClientProps = {
 
 function modeBadge(mode: LeagueDetailPageData["mode"]) {
   if (mode === "draft") {
-    return { label: "Draft Mode", className: "bg-sage/45 text-forest" };
+    return { label: "Draft Mode", className: "bg-primary/45 text-forest" };
   }
   return { label: "Open Selection Mode", className: "bg-gold/25 text-gold" };
 }
@@ -34,7 +34,7 @@ export function LeagueDetailClient({ data }: LeagueDetailClientProps) {
 
   return (
     <section className="space-y-5 sm:space-y-6">
-      <nav className="text-sm text-charcoal/70">
+      <nav className="text-sm text-muted-foreground">
         <Link href="/leagues" className="font-medium text-forest/80 hover:text-forest">
           My Leagues
         </Link>{" "}
@@ -47,7 +47,7 @@ export function LeagueDetailClient({ data }: LeagueDetailClientProps) {
           <div>
             <h2 className="text-3xl font-bold tracking-tight text-forest">{data.leagueName}</h2>
             <div className="mt-2 flex flex-wrap items-center gap-2">
-              <p className="text-sm text-charcoal/75 sm:text-base">{data.competitionName}</p>
+              <p className="text-sm text-muted-foreground sm:text-base">{data.competitionName}</p>
               <Badge variant="secondary" className={cn("rounded-xl", modeMeta.className)}>
                 {modeMeta.label}
               </Badge>
@@ -62,7 +62,7 @@ export function LeagueDetailClient({ data }: LeagueDetailClientProps) {
                 <Link href={`/leagues/${data.leagueId}/commissioner`}>
                   <Button
                     size="sm"
-                    className="h-9 rounded-2xl bg-sage text-forest hover:bg-sage/80"
+                    className="h-9 rounded-2xl bg-primary text-primary-foreground hover:bg-primary/90"
                   >
                     Open Commissioner Portal
                   </Button>
@@ -101,7 +101,7 @@ export function LeagueDetailClient({ data }: LeagueDetailClientProps) {
               <CardDescription>Current ranking across all league participants.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4 px-6">
-              <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-border/70 bg-offwhite px-3 py-2 text-xs text-charcoal/70">
+              <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-border/70 bg-offwhite px-3 py-2 text-xs text-muted-foreground">
                 <span className="inline-flex items-center gap-2 font-medium text-forest">
                   <span className="h-2 w-2 rounded-full bg-gold animate-pulse" aria-hidden="true" />
                   Live points pulse
@@ -111,24 +111,24 @@ export function LeagueDetailClient({ data }: LeagueDetailClientProps) {
 
               <div className="grid gap-3 sm:grid-cols-2">
                 <div className="rounded-2xl border border-border/70 bg-offwhite p-4">
-                  <p className="text-xs uppercase tracking-wide text-charcoal/60">League Average</p>
+                  <p className="text-xs uppercase tracking-wide text-muted-foreground">League Average</p>
                   <p className="mt-1 text-2xl font-bold text-forest">{data.leagueAveragePoints}</p>
                 </div>
                 <div className="rounded-2xl border border-border/70 bg-offwhite p-4">
-                  <p className="text-xs uppercase tracking-wide text-charcoal/60">Top Performer</p>
+                  <p className="text-xs uppercase tracking-wide text-muted-foreground">Top Performer</p>
                   <p className="mt-1 text-sm font-semibold text-forest">{data.topPerformerTeam}</p>
                   <p className="text-xs text-gold">{data.topPerformerPoints} total points</p>
                 </div>
               </div>
 
               {data.participants.length === 0 ? (
-                <p className="rounded-2xl border border-border/70 bg-offwhite p-4 text-sm text-charcoal/75">
+                <p className="rounded-2xl border border-border/70 bg-offwhite p-4 text-sm text-muted-foreground">
                   No participants are currently available for this league yet.
                 </p>
               ) : (
                 <div className="overflow-x-auto rounded-2xl border border-border/70 bg-offwhite">
                   <table className="w-full min-w-[780px] text-sm">
-                    <thead className="border-b border-border/70 text-left text-xs uppercase tracking-wide text-charcoal/60">
+                    <thead className="border-b border-border/70 text-left text-xs uppercase tracking-wide text-muted-foreground">
                       <tr>
                         <th className="px-4 py-3">Rank</th>
                         <th className="px-4 py-3">Team Name</th>
@@ -142,7 +142,7 @@ export function LeagueDetailClient({ data }: LeagueDetailClientProps) {
                         <tr
                           key={row.id}
                           className={cn(
-                            "text-charcoal/90",
+                            "text-foreground/90",
                             row.isCurrentUser && "bg-gold/10",
                           )}
                         >
@@ -154,7 +154,7 @@ export function LeagueDetailClient({ data }: LeagueDetailClientProps) {
                           <td className={cn("px-4 py-3 font-semibold", row.isCurrentUser ? "text-gold" : "text-forest")}>
                             {row.totalPoints}
                           </td>
-                          <td className="px-4 py-3 font-medium text-charcoal">{row.thisWeekPoints}</td>
+                          <td className="px-4 py-3 font-medium text-foreground">{row.thisWeekPoints}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -173,7 +173,7 @@ export function LeagueDetailClient({ data }: LeagueDetailClientProps) {
             </CardHeader>
             <CardContent className="px-6">
               <Link href="/roster">
-                <Button className="h-10 rounded-2xl bg-sage text-forest hover:bg-sage/80">
+                <Button className="h-10 rounded-2xl bg-primary text-primary-foreground hover:bg-primary/90">
                   Go to Roster
                 </Button>
               </Link>
@@ -189,7 +189,7 @@ export function LeagueDetailClient({ data }: LeagueDetailClientProps) {
             </CardHeader>
             <CardContent className="px-6">
               <Link href="/predictions">
-                <Button className="h-10 rounded-2xl bg-sage text-forest hover:bg-sage/80">
+                <Button className="h-10 rounded-2xl bg-primary text-primary-foreground hover:bg-primary/90">
                   Go to Predictions
                 </Button>
               </Link>
@@ -205,7 +205,7 @@ export function LeagueDetailClient({ data }: LeagueDetailClientProps) {
             </CardHeader>
             <CardContent className="px-6">
               <Link href="/trades">
-                <Button className="h-10 rounded-2xl bg-sage text-forest hover:bg-sage/80">
+                <Button className="h-10 rounded-2xl bg-primary text-primary-foreground hover:bg-primary/90">
                   Go to Trades
                 </Button>
               </Link>
@@ -222,7 +222,7 @@ export function LeagueDetailClient({ data }: LeagueDetailClientProps) {
               </CardHeader>
               <CardContent className="px-6">
                 <Link href={`/leagues/${data.leagueId}/commissioner`}>
-                  <Button className="h-10 rounded-2xl bg-sage text-forest hover:bg-sage/80">
+                  <Button className="h-10 rounded-2xl bg-primary text-primary-foreground hover:bg-primary/90">
                     Open Commissioner Portal
                   </Button>
                 </Link>

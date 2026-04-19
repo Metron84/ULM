@@ -21,12 +21,12 @@ export default async function DraftPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="px-6">
-              <p className="rounded-2xl border border-border/70 bg-offwhite p-4 text-sm text-charcoal/75">
+              <p className="rounded-2xl border border-border/70 bg-offwhite p-4 text-sm text-muted-foreground">
                 Join or create a Draft Mode league in My Leagues to unlock the full draft board.
               </p>
               <div className="mt-4">
                 <Link href="/leagues">
-                  <Button className="h-10 rounded-2xl bg-sage text-forest hover:bg-sage/80">
+                  <Button className="h-10 rounded-2xl bg-primary text-primary-foreground hover:bg-primary/90">
                     Go to My Leagues
                   </Button>
                 </Link>

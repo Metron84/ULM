@@ -42,7 +42,7 @@ function modeBadge(mode: LeagueCardRow["mode"]) {
   if (mode === "draft") {
     return {
       label: "Draft Mode",
-      className: "bg-sage/50 text-forest",
+      className: "bg-primary/50 text-forest",
     };
   }
   return {
@@ -165,14 +165,14 @@ export function MyLeaguesClient({ competitions, leagues }: MyLeaguesClientProps)
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <h2 className="text-3xl font-bold tracking-tight text-forest">My Leagues</h2>
-            <p className="mt-2 text-sm text-charcoal/75 sm:text-base">
+            <p className="mt-2 text-sm text-muted-foreground sm:text-base">
               Your private and public competitions
             </p>
           </div>
           <Button
             type="button"
             size="lg"
-            className="h-12 rounded-3xl bg-sage px-5 text-base font-semibold text-gold hover:bg-sage/80"
+            className="h-12 rounded-3xl bg-primary px-5 text-base font-semibold text-primary-foreground hover:bg-primary/90"
             onClick={() => setOpen(true)}
           >
             + Create New League
@@ -202,10 +202,10 @@ export function MyLeaguesClient({ competitions, leagues }: MyLeaguesClientProps)
                 <CardDescription>{league.competitionName}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-2 px-5 text-sm">
-                <p className="rounded-2xl border border-border/70 bg-offwhite px-3 py-2 text-charcoal">
+                <p className="rounded-2xl border border-border/70 bg-offwhite px-3 py-2 text-foreground">
                   Rank: <span className="font-semibold text-forest">#{league.rank ?? "-"}</span>
                 </p>
-                <p className="rounded-2xl border border-border/70 bg-offwhite px-3 py-2 text-charcoal">
+                <p className="rounded-2xl border border-border/70 bg-offwhite px-3 py-2 text-foreground">
                   Total Points:{" "}
                   <span className="font-semibold text-gold">{league.totalPoints}</span>
                 </p>
@@ -217,7 +217,7 @@ export function MyLeaguesClient({ competitions, leagues }: MyLeaguesClientProps)
                   </Button>
                 </Link>
                 <Link href="/roster">
-                  <Button size="sm" className="h-9 rounded-2xl bg-sage text-forest hover:bg-sage/80">
+                  <Button size="sm" className="h-9 rounded-2xl bg-primary text-primary-foreground hover:bg-primary/90">
                     View Roster
                   </Button>
                 </Link>
@@ -250,7 +250,7 @@ export function MyLeaguesClient({ competitions, leagues }: MyLeaguesClientProps)
 
       {leagues.length === 0 ? (
         <Card className="rounded-3xl border-border/70 bg-card/90 py-6 shadow-soft">
-          <CardContent className="px-6 text-sm text-charcoal/75">
+          <CardContent className="px-6 text-sm text-muted-foreground">
             You are not in any leagues yet. Create your first league to start your season.
           </CardContent>
         </Card>
@@ -267,7 +267,7 @@ export function MyLeaguesClient({ competitions, leagues }: MyLeaguesClientProps)
 
           <div className="space-y-4 px-6 pb-6 pt-5">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-charcoal">League name</label>
+              <label className="text-sm font-medium text-foreground">League name</label>
               <input
                 value={leagueName}
                 onChange={(event) => setLeagueName(event.target.value)}
@@ -277,11 +277,11 @@ export function MyLeaguesClient({ competitions, leagues }: MyLeaguesClientProps)
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-charcoal">Competition</label>
+              <label className="text-sm font-medium text-foreground">Competition</label>
               <select
                 value={competitionName}
                 onChange={(event) => setCompetitionName(event.target.value)}
-                className="h-11 w-full rounded-2xl border border-border bg-offwhite px-3 text-sm text-charcoal"
+                className="h-11 w-full rounded-2xl border border-border bg-offwhite px-3 text-sm text-foreground"
               >
                 {competitionChoices.map((competition) => (
                   <option key={`${competition.name}-${competition.type}`} value={competition.name}>
@@ -293,8 +293,8 @@ export function MyLeaguesClient({ competitions, leagues }: MyLeaguesClientProps)
 
             {isBig5 ? (
               <div className="space-y-3 rounded-2xl border border-border/70 bg-offwhite p-4">
-                <p className="text-sm font-medium text-charcoal">Big 5 Scope</p>
-                <label className="flex items-center gap-2 rounded-xl border border-border/70 bg-card px-3 py-2 text-sm text-charcoal">
+                <p className="text-sm font-medium text-foreground">Big 5 Scope</p>
+                <label className="flex items-center gap-2 rounded-xl border border-border/70 bg-card px-3 py-2 text-sm text-foreground">
                   <input
                     type="checkbox"
                     checked={big5Selection === "all"}
@@ -318,7 +318,7 @@ export function MyLeaguesClient({ competitions, leagues }: MyLeaguesClientProps)
                             "flex items-center gap-2 rounded-xl border px-3 py-2 text-left text-sm transition",
                             active
                               ? "border-gold bg-gold/10 text-forest"
-                              : "border-border bg-card text-charcoal",
+                              : "border-border bg-card text-foreground",
                           )}
                         >
                           <input
@@ -337,11 +337,11 @@ export function MyLeaguesClient({ competitions, leagues }: MyLeaguesClientProps)
 
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-charcoal">Mode</label>
+                <label className="text-sm font-medium text-foreground">Mode</label>
                 <select
                   value={mode}
                   onChange={(event) => setMode(event.target.value as "draft" | "open_selection")}
-                  className="h-11 w-full rounded-2xl border border-border bg-offwhite px-3 text-sm text-charcoal"
+                  className="h-11 w-full rounded-2xl border border-border bg-offwhite px-3 text-sm text-foreground"
                 >
                   <option value="draft">Draft Mode</option>
                   <option value="open_selection">Open Selection Mode</option>
@@ -349,11 +349,11 @@ export function MyLeaguesClient({ competitions, leagues }: MyLeaguesClientProps)
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-charcoal">League Visibility</label>
+                <label className="text-sm font-medium text-foreground">League Visibility</label>
                 <select
                   value={leagueType}
                   onChange={(event) => setLeagueType(event.target.value as "private" | "public")}
-                  className="h-11 w-full rounded-2xl border border-border bg-offwhite px-3 text-sm text-charcoal"
+                  className="h-11 w-full rounded-2xl border border-border bg-offwhite px-3 text-sm text-foreground"
                 >
                   <option value="private">Private League</option>
                   <option value="public">Public League</option>
@@ -362,17 +362,17 @@ export function MyLeaguesClient({ competitions, leagues }: MyLeaguesClientProps)
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-charcoal">Commissioner selection</label>
-              <div className="rounded-2xl border border-border/70 bg-offwhite p-3 text-sm text-charcoal">
+              <label className="text-sm font-medium text-foreground">Commissioner selection</label>
+              <div className="rounded-2xl border border-border/70 bg-offwhite p-3 text-sm text-foreground">
                 You are the default commissioner for this league.
-                <p className="mt-1 text-xs text-charcoal/70">You can change this later.</p>
+                <p className="mt-1 text-xs text-muted-foreground">You can change this later.</p>
               </div>
             </div>
 
             <Button
               type="button"
               size="lg"
-              className="h-12 w-full rounded-3xl bg-sage text-base font-semibold text-forest hover:bg-sage/80"
+              className="h-12 w-full rounded-3xl bg-primary text-base font-semibold text-primary-foreground hover:bg-primary/90"
               disabled={creating}
               onClick={submitCreateLeague}
             >

@@ -17,7 +17,7 @@ type CommissionerPortalClientProps = {
 
 function tradeBadge(status: CommissionerPortalData["pendingTrades"][number]["status"]) {
   if (status === "commissioner_pending") {
-    return "bg-sage/45 text-forest";
+    return "bg-primary/45 text-forest";
   }
   return "bg-gold/25 text-gold";
 }
@@ -136,7 +136,7 @@ export function CommissionerPortalClient({ data }: CommissionerPortalClientProps
 
   return (
     <section className="space-y-5 sm:space-y-6">
-      <nav className="text-sm text-charcoal/70">
+      <nav className="text-sm text-muted-foreground">
         <Link href="/leagues" className="font-medium text-forest/80 hover:text-forest">
           My Leagues
         </Link>{" "}
@@ -157,7 +157,7 @@ export function CommissionerPortalClient({ data }: CommissionerPortalClientProps
             <h2 className="mt-2 text-3xl font-bold tracking-tight text-forest">
               Commissioner Portal - {data.leagueName}
             </h2>
-            <p className="mt-2 text-sm text-charcoal/75 sm:text-base">
+            <p className="mt-2 text-sm text-muted-foreground sm:text-base">
               Manage your league
             </p>
           </div>
@@ -174,7 +174,7 @@ export function CommissionerPortalClient({ data }: CommissionerPortalClientProps
         </CardHeader>
         <CardContent className="space-y-3 px-6">
           {data.pendingTrades.length === 0 ? (
-            <p className="rounded-2xl border border-border/70 bg-offwhite p-4 text-sm text-charcoal/75">
+            <p className="rounded-2xl border border-border/70 bg-offwhite p-4 text-sm text-muted-foreground">
               No trades waiting for commissioner action.
             </p>
           ) : (
@@ -189,18 +189,18 @@ export function CommissionerPortalClient({ data }: CommissionerPortalClientProps
                   </Badge>
                 </div>
                 {trade.message ? (
-                  <p className="mt-2 text-sm text-charcoal/75">{trade.message}</p>
+                  <p className="mt-2 text-sm text-muted-foreground">{trade.message}</p>
                 ) : null}
                 <div className="mt-3 grid gap-2 sm:grid-cols-2">
                   <div className="rounded-xl border border-border/70 bg-card p-3">
-                    <p className="text-xs uppercase tracking-wide text-charcoal/60">Offered</p>
-                    <p className="mt-1 text-sm text-charcoal">
+                    <p className="text-xs uppercase tracking-wide text-muted-foreground">Offered</p>
+                    <p className="mt-1 text-sm text-foreground">
                       {trade.offering.length > 0 ? trade.offering.join(" • ") : "None"}
                     </p>
                   </div>
                   <div className="rounded-xl border border-border/70 bg-card p-3">
-                    <p className="text-xs uppercase tracking-wide text-charcoal/60">Requested</p>
-                    <p className="mt-1 text-sm text-charcoal">
+                    <p className="text-xs uppercase tracking-wide text-muted-foreground">Requested</p>
+                    <p className="mt-1 text-sm text-foreground">
                       {trade.requesting.length > 0 ? trade.requesting.join(" • ") : "None"}
                     </p>
                   </div>
@@ -217,7 +217,7 @@ export function CommissionerPortalClient({ data }: CommissionerPortalClientProps
                   <Button
                     type="button"
                     size="sm"
-                    className="h-9 rounded-2xl bg-sage text-forest hover:bg-sage/80"
+                    className="h-9 rounded-2xl bg-primary text-primary-foreground hover:bg-primary/90"
                     disabled={actingTradeId === trade.id}
                     onClick={() => updateTrade(trade.id, "approve")}
                   >
@@ -248,7 +248,7 @@ export function CommissionerPortalClient({ data }: CommissionerPortalClientProps
         <CardContent className="space-y-3 px-6">
           {data.inviteCode ? (
             <div className="rounded-2xl border border-border/70 bg-card p-3">
-              <p className="text-xs uppercase tracking-wide text-charcoal/60">Invite Link</p>
+              <p className="text-xs uppercase tracking-wide text-muted-foreground">Invite Link</p>
               <p className="mt-1 break-all text-sm text-forest">
                 {inviteUrl ?? `Code: ${data.inviteCode}`}
               </p>
@@ -269,13 +269,13 @@ export function CommissionerPortalClient({ data }: CommissionerPortalClientProps
           ) : null}
 
           {data.participants.length === 0 ? (
-            <p className="rounded-2xl border border-border/70 bg-offwhite p-4 text-sm text-charcoal/75">
+            <p className="rounded-2xl border border-border/70 bg-offwhite p-4 text-sm text-muted-foreground">
               No participants found in this league yet.
             </p>
           ) : (
             <div className="overflow-x-auto rounded-2xl border border-border/70 bg-offwhite">
               <table className="w-full min-w-[760px] text-sm">
-                <thead className="border-b border-border/70 text-left text-xs uppercase tracking-wide text-charcoal/60">
+                <thead className="border-b border-border/70 text-left text-xs uppercase tracking-wide text-muted-foreground">
                   <tr>
                     <th className="px-4 py-3">Team Name</th>
                     <th className="px-4 py-3">Manager Name</th>
@@ -286,7 +286,7 @@ export function CommissionerPortalClient({ data }: CommissionerPortalClientProps
                 </thead>
                 <tbody className="divide-y divide-border/60">
                   {data.participants.map((participant) => (
-                    <tr key={participant.id} className="text-charcoal/90">
+                    <tr key={participant.id} className="text-foreground/90">
                       <td className="px-4 py-3 font-semibold text-forest">{participant.teamName}</td>
                       <td className="px-4 py-3">{participant.managerName}</td>
                       <td className="px-4 py-3">#{participant.rank ?? "-"}</td>
@@ -304,7 +304,7 @@ export function CommissionerPortalClient({ data }: CommissionerPortalClientProps
                             Remove
                           </Button>
                         ) : (
-                          <Badge variant="secondary" className="rounded-xl bg-sage/45 text-forest">
+                          <Badge variant="secondary" className="rounded-xl bg-primary/45 text-forest">
                             You
                           </Badge>
                         )}
@@ -328,7 +328,7 @@ export function CommissionerPortalClient({ data }: CommissionerPortalClientProps
         <CardContent className="space-y-3 px-6">
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-charcoal">League name</label>
+              <label className="text-sm font-medium text-foreground">League name</label>
               <input
                 value={leagueName}
                 onChange={(event) => setLeagueName(event.target.value)}
@@ -336,13 +336,13 @@ export function CommissionerPortalClient({ data }: CommissionerPortalClientProps
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-charcoal">Mode</label>
+              <label className="text-sm font-medium text-foreground">Mode</label>
               <select
                 value={leagueMode}
                 onChange={(event) =>
                   setLeagueMode(event.target.value as "draft" | "open_selection")
                 }
-                className="h-11 w-full rounded-2xl border border-border bg-offwhite px-3 text-sm text-charcoal"
+                className="h-11 w-full rounded-2xl border border-border bg-offwhite px-3 text-sm text-foreground"
               >
                 <option value="draft">Draft Mode</option>
                 <option value="open_selection">Open Selection Mode</option>
@@ -364,7 +364,7 @@ export function CommissionerPortalClient({ data }: CommissionerPortalClientProps
           <div className="flex gap-2">
             <Button
               type="button"
-              className="h-10 rounded-2xl bg-sage text-forest hover:bg-sage/80"
+              className="h-10 rounded-2xl bg-primary text-primary-foreground hover:bg-primary/90"
               disabled={savingLeagueSettings}
               onClick={saveLeagueSettings}
             >
@@ -389,13 +389,13 @@ export function CommissionerPortalClient({ data }: CommissionerPortalClientProps
           <CardDescription>Commissioner tools for league governance.</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-3 px-6 sm:grid-cols-2">
-          <div className="rounded-2xl border border-border/70 bg-offwhite p-4 text-sm text-charcoal/80">
+          <div className="rounded-2xl border border-border/70 bg-offwhite p-4 text-sm text-muted-foreground">
             <p className="font-semibold text-forest">Resolve Disputes</p>
             <p className="mt-1">
               Placeholder for dispute tickets, evidence review, and final commissioner ruling.
             </p>
           </div>
-          <div className="rounded-2xl border border-border/70 bg-offwhite p-4 text-sm text-charcoal/80">
+          <div className="rounded-2xl border border-border/70 bg-offwhite p-4 text-sm text-muted-foreground">
             <p className="font-semibold text-forest">End League / Archive</p>
             <p className="mt-1">
               Placeholder for finalizing standings, archiving history, and season wrap actions.

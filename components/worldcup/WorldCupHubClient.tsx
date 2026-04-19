@@ -92,11 +92,11 @@ export function WorldCupHubClient({
               You are in the Knockouts!
             </Badge>
           </div>
-          <CardDescription className="mt-3 text-sm text-charcoal/75 sm:text-base">
+          <CardDescription className="mt-3 text-sm text-muted-foreground sm:text-base">
             Global Leaderboard Position #{globalRank.toLocaleString()} of {globalTotal.toLocaleString()}
           </CardDescription>
           {currentRow ? (
-            <p className="mt-2 text-xs text-charcoal/70 sm:text-sm">
+            <p className="mt-2 text-xs text-muted-foreground sm:text-sm">
               Your squad today: <span className="font-semibold text-gold">{currentRow.teamName}</span> with{" "}
               <span className="font-semibold text-forest">{currentRow.totalPoints}</span> points.
             </p>
@@ -120,7 +120,7 @@ export function WorldCupHubClient({
             }}
             className={cn(
               "flex-1 rounded-2xl px-4 py-2 text-sm font-medium transition",
-              tab === value ? "bg-sage/45 text-forest" : "text-charcoal/75 hover:bg-offwhite",
+              tab === value ? "bg-primary/45 text-forest" : "text-muted-foreground hover:bg-offwhite",
             )}
           >
             {label}
@@ -134,7 +134,7 @@ export function WorldCupHubClient({
           <CardDescription>Infinite-scroll style leaderboard with tournament momentum.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-2 px-6">
-          <div className="grid grid-cols-[70px_minmax(0,1fr)_minmax(0,1fr)_110px] rounded-2xl border border-border/70 bg-offwhite px-3 py-2 text-xs font-semibold uppercase tracking-wide text-charcoal/60">
+          <div className="grid grid-cols-[70px_minmax(0,1fr)_minmax(0,1fr)_110px] rounded-2xl border border-border/70 bg-offwhite px-3 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             <span>Rank</span>
             <span>Team</span>
             <span>Manager</span>
@@ -157,7 +157,7 @@ export function WorldCupHubClient({
                   #{row.rank}
                 </p>
                 <p className="truncate font-semibold text-forest">{row.teamName}</p>
-                <p className="truncate text-charcoal/70">{row.managerName}</p>
+                <p className="truncate text-muted-foreground">{row.managerName}</p>
                 <p className={cn("text-right font-semibold", row.isCurrentUser ? "text-gold" : "text-forest")}>
                   {row.totalPoints}
                 </p>
@@ -167,11 +167,11 @@ export function WorldCupHubClient({
             <div ref={sentinelRef} className="h-4" />
 
             {hasMore ? (
-              <div className="pb-3 pt-1 text-center text-xs text-charcoal/60">
+              <div className="pb-3 pt-1 text-center text-xs text-muted-foreground">
                 Loading more leaderboard entries...
               </div>
             ) : (
-              <div className="pb-3 pt-1 text-center text-xs text-charcoal/50">
+              <div className="pb-3 pt-1 text-center text-xs text-foreground/50">
                 End of leaderboard view
               </div>
             )}
@@ -182,7 +182,7 @@ export function WorldCupHubClient({
               <Button
                 type="button"
                 variant="secondary"
-                className="h-10 rounded-2xl bg-sage px-4 text-forest hover:bg-sage/80"
+                className="h-10 rounded-2xl bg-primary px-4 text-primary-foreground hover:bg-primary/90"
                 onClick={() => setVisibleCount((count) => Math.min(count + 20, filteredLeaderboard.length))}
               >
                 Load 20 More
@@ -205,11 +205,11 @@ export function WorldCupHubClient({
                   {column.title}
                 </div>
                 {column.matches.map((match, matchIndex) => (
-                  <div key={`${column.title}-${match}`} className="relative rounded-2xl border border-border/70 bg-offwhite p-3 text-sm text-charcoal">
+                  <div key={`${column.title}-${match}`} className="relative rounded-2xl border border-border/70 bg-offwhite p-3 text-sm text-foreground">
                     <p className="font-medium text-forest">
                       {column.title.replace("s", "")} {matchIndex + 1}
                     </p>
-                    <p className="mt-1 text-charcoal/75">{match}</p>
+                    <p className="mt-1 text-muted-foreground">{match}</p>
                     {columnIndex < bracketColumns.length - 1 ? (
                       <span
                         aria-hidden="true"

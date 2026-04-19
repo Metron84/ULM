@@ -68,7 +68,7 @@ function TeamPill({
           <img src={logoUrl} alt="" className="h-full w-full object-cover" />
         </span>
       ) : (
-        <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-border bg-sage/25 text-xs font-semibold text-forest">
+        <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-border bg-primary/25 text-xs font-semibold text-forest">
           {shortName.slice(0, 3).toUpperCase()}
         </span>
       )}
@@ -77,7 +77,7 @@ function TeamPill({
           {flag ? `${flag} ` : null}
           {shortName}
         </p>
-        <p className="text-xs text-charcoal/70">{name}</p>
+        <p className="text-xs text-muted-foreground">{name}</p>
       </div>
     </div>
   );
@@ -190,7 +190,7 @@ export function PredictionsClient({ fixtures, leaderboard }: PredictionsClientPr
     <section className="space-y-5 sm:space-y-6">
       <header className="rounded-3xl border border-border/70 bg-card/90 p-6 shadow-soft sm:p-8">
         <h2 className="text-3xl font-bold tracking-tight text-forest">Predictions - Round of 16</h2>
-        <p className="mt-2 text-sm text-charcoal/75 sm:text-base">
+        <p className="mt-2 text-sm text-muted-foreground sm:text-base">
           Mini-league • Separate from main points • Purely for fun
         </p>
       </header>
@@ -213,7 +213,7 @@ export function PredictionsClient({ fixtures, leaderboard }: PredictionsClientPr
         </CardHeader>
         <CardContent className="space-y-4 px-6">
           {upcomingFixtures.length === 0 ? (
-            <p className="rounded-2xl border border-border/70 bg-offwhite p-4 text-sm text-charcoal/75">
+            <p className="rounded-2xl border border-border/70 bg-offwhite p-4 text-sm text-muted-foreground">
               No upcoming fixtures are available yet. Check back soon for the next prediction window.
             </p>
           ) : (
@@ -231,7 +231,7 @@ export function PredictionsClient({ fixtures, leaderboard }: PredictionsClientPr
                         name={fixture.homeTeam.name}
                         logoUrl={fixture.homeTeam.logoUrl}
                       />
-                      <span className="text-sm font-semibold text-charcoal/70">vs</span>
+                      <span className="text-sm font-semibold text-muted-foreground">vs</span>
                       <TeamPill
                         shortName={fixture.awayTeam.shortName}
                         name={fixture.awayTeam.name}
@@ -239,7 +239,7 @@ export function PredictionsClient({ fixtures, leaderboard }: PredictionsClientPr
                       />
                     </div>
                     <div className="flex items-center gap-2">
-                      <Badge variant="outline" className="rounded-xl border-border text-charcoal/80">
+                      <Badge variant="outline" className="rounded-xl border-border text-muted-foreground">
                         {matchDate.toLocaleDateString("en-US", {
                           weekday: "short",
                           month: "short",
@@ -256,33 +256,33 @@ export function PredictionsClient({ fixtures, leaderboard }: PredictionsClientPr
 
                   <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
                     {fixture.prediction ? (
-                      <div className="rounded-2xl border border-border/70 bg-card px-3 py-2 text-sm text-charcoal">
+                      <div className="rounded-2xl border border-border/70 bg-card px-3 py-2 text-sm text-foreground">
                         <p>
                           Your prediction:{" "}
                           <span className="font-semibold text-forest">
                             {fixture.prediction.homeScore}-{fixture.prediction.awayScore}
                           </span>
                           {fixture.prediction.isNoScorer ? (
-                            <span className="ml-2 text-charcoal/70">No goal scorer</span>
+                            <span className="ml-2 text-muted-foreground">No goal scorer</span>
                           ) : (
-                            <span className="ml-2 text-charcoal/70">
+                            <span className="ml-2 text-muted-foreground">
                               Scorer: {fixture.prediction.scorerName ?? "Selected"}
                             </span>
                           )}
                         </p>
-                        <p className="mt-1 text-xs text-charcoal/70">
+                        <p className="mt-1 text-xs text-muted-foreground">
                           Points earned:{" "}
                           <span className="font-semibold text-gold">{fixture.prediction.pointsAwarded}</span>
                         </p>
                       </div>
                     ) : (
-                      <p className="text-sm text-charcoal/70">No prediction yet</p>
+                      <p className="text-sm text-muted-foreground">No prediction yet</p>
                     )}
 
                     <Button
                       size="lg"
                       variant="secondary"
-                      className="h-11 rounded-2xl bg-sage px-5 text-forest hover:bg-sage/80"
+                      className="h-11 rounded-2xl bg-primary px-5 text-primary-foreground hover:bg-primary/90"
                       onClick={() => openPredictionSheet(fixture)}
                     >
                       {fixture.prediction ? "Edit" : "Make Prediction"}
@@ -306,7 +306,7 @@ export function PredictionsClient({ fixtures, leaderboard }: PredictionsClientPr
         <CardContent className="overflow-x-auto px-6">
           <table className="min-w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-border text-charcoal/70">
+              <tr className="border-b border-border text-muted-foreground">
                 <th className="px-2 py-2 font-medium">Rank</th>
                 <th className="px-2 py-2 font-medium">Manager</th>
                 <th className="px-2 py-2 font-medium">Team</th>
@@ -323,8 +323,8 @@ export function PredictionsClient({ fixtures, leaderboard }: PredictionsClientPr
                   )}
                 >
                   <td className="px-2 py-3 font-semibold text-forest">#{row.rank}</td>
-                  <td className="px-2 py-3 text-charcoal">{row.managerName}</td>
-                  <td className="px-2 py-3 text-charcoal/75">{row.teamName}</td>
+                  <td className="px-2 py-3 text-foreground">{row.managerName}</td>
+                  <td className="px-2 py-3 text-muted-foreground">{row.teamName}</td>
                   <td
                     className={cn(
                       "px-2 py-3 text-right font-semibold",
@@ -357,7 +357,7 @@ export function PredictionsClient({ fixtures, leaderboard }: PredictionsClientPr
           <div className="space-y-4 px-6 pb-4">
             <div className="grid grid-cols-2 gap-3">
               <div className="rounded-2xl border border-border/70 bg-offwhite p-3">
-                <label className="text-xs text-charcoal/70">Home goals</label>
+                <label className="text-xs text-muted-foreground">Home goals</label>
                 <input
                   type="number"
                   min={0}
@@ -370,7 +370,7 @@ export function PredictionsClient({ fixtures, leaderboard }: PredictionsClientPr
                 />
               </div>
               <div className="rounded-2xl border border-border/70 bg-offwhite p-3">
-                <label className="text-xs text-charcoal/70">Away goals</label>
+                <label className="text-xs text-muted-foreground">Away goals</label>
                 <input
                   type="number"
                   min={0}
@@ -390,7 +390,7 @@ export function PredictionsClient({ fixtures, leaderboard }: PredictionsClientPr
               </div>
             ) : (
               <div className="rounded-2xl border border-border/70 bg-offwhite p-3">
-                <label className="text-xs text-charcoal/70">Select one goal scorer</label>
+                <label className="text-xs text-muted-foreground">Select one goal scorer</label>
                 <input
                   value={scorerSearch}
                   onChange={(event) => setScorerSearch(event.target.value)}
@@ -399,7 +399,7 @@ export function PredictionsClient({ fixtures, leaderboard }: PredictionsClientPr
                 />
                 <div className="mt-2 max-h-40 space-y-1 overflow-y-auto rounded-xl border border-border/70 bg-card p-1">
                   {filteredScorers.length === 0 ? (
-                    <p className="px-2 py-2 text-xs text-charcoal/60">No players found.</p>
+                    <p className="px-2 py-2 text-xs text-muted-foreground">No players found.</p>
                   ) : (
                     filteredScorers.map((option) => (
                       <button
@@ -409,12 +409,12 @@ export function PredictionsClient({ fixtures, leaderboard }: PredictionsClientPr
                         className={cn(
                           "flex w-full items-center justify-between rounded-lg px-2 py-2 text-left text-sm",
                           selectedScorerId === option.id
-                            ? "bg-sage/35 text-forest"
-                            : "hover:bg-offwhite text-charcoal/85",
+                            ? "bg-primary/35 text-forest"
+                            : "hover:bg-offwhite text-foreground/85",
                         )}
                       >
                         <span>{option.name}</span>
-                        <span className="text-xs text-charcoal/60">{option.teamShort}</span>
+                        <span className="text-xs text-muted-foreground">{option.teamShort}</span>
                       </button>
                     ))
                   )}
@@ -422,7 +422,7 @@ export function PredictionsClient({ fixtures, leaderboard }: PredictionsClientPr
               </div>
             )}
 
-            <div className="rounded-2xl border border-border/70 bg-offwhite p-3 text-xs text-charcoal/75">
+            <div className="rounded-2xl border border-border/70 bg-offwhite p-3 text-xs text-muted-foreground">
               <p className="font-semibold text-forest">Scoring Rules</p>
               <p className="mt-1">Correct exact score + correct scorer → 2 points</p>
               <p>Correct scorer only → 1 point</p>
@@ -432,7 +432,7 @@ export function PredictionsClient({ fixtures, leaderboard }: PredictionsClientPr
             <Button
               type="button"
               size="lg"
-              className="h-12 w-full rounded-2xl bg-sage text-forest hover:bg-sage/80"
+              className="h-12 w-full rounded-2xl bg-primary text-primary-foreground hover:bg-primary/90"
               onClick={submitPrediction}
               disabled={submitting}
             >

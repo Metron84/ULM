@@ -15,18 +15,18 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        forest: "#1F2937",
+        forest: "#111827",
         sage: "#1E3A8A",
-        gold: "#3B82F6",
-        offwhite: "#F8FAFC",
-        charcoal: "#6B7280",
-        line: "#E5E7EB",
+        gold: "#F59E0B",
+        offwhite: "#EAF3FF",
+        charcoal: "#1F2937",
+        line: "#D6E4F5",
 
         primary: "#1E3A8A",
         accent: "#3B82F6",
-        reward: "#3B82F6",
-        background: "#F8FAFC",
-        foreground: "#1F2937",
+        reward: "#F59E0B",
+        background: "#EAF3FF",
+        foreground: "#111827",
       },
       fontFamily: {
         sans: ["var(--font-inter)", "ui-sans-serif", "system-ui", "sans-serif"],

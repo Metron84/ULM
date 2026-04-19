@@ -57,7 +57,7 @@ const actionOrder: AssistantFunctionType[] = [
 function personaBackgroundClass(persona: AssistantPersona) {
   switch (persona) {
     case "analyst":
-      return "bg-sage/40";
+      return "bg-primary/40";
     case "diehard_fan":
       return "bg-gold/40";
     case "fantasy_veteran":
@@ -162,7 +162,7 @@ export function AssistantManagerClient({ persona }: AssistantManagerClientProps)
           </div>
           <div>
             <h2 className="text-3xl font-bold tracking-tight text-forest">{personaTone}</h2>
-            <p className="mt-2 text-base text-charcoal/75">Your co-manager is here</p>
+            <p className="mt-2 text-base text-muted-foreground">Your co-manager is here</p>
           </div>
         </div>
       </header>
@@ -181,11 +181,11 @@ export function AssistantManagerClient({ persona }: AssistantManagerClientProps)
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold",
               )}
             >
-              <span className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-sage/35 text-xl">
+              <span className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/35 text-xl">
                 {meta.icon}
               </span>
               <h3 className="text-sm font-semibold text-forest sm:text-base">{meta.title}</h3>
-              <p className="mt-1 text-xs text-charcoal/70 sm:text-sm">{meta.description}</p>
+              <p className="mt-1 text-xs text-muted-foreground sm:text-sm">{meta.description}</p>
             </button>
           );
         })}
@@ -209,8 +209,8 @@ export function AssistantManagerClient({ persona }: AssistantManagerClientProps)
                 className={cn(
                   "max-w-[85%] rounded-2xl px-3 py-2 text-sm leading-relaxed shadow-soft",
                   message.role === "assistant"
-                    ? "ml-auto bg-sage/30 text-charcoal"
-                    : "mr-auto bg-card text-charcoal/90",
+                    ? "ml-auto bg-primary/30 text-foreground"
+                    : "mr-auto bg-card text-foreground/90",
                 )}
               >
                 {message.text}
@@ -218,8 +218,8 @@ export function AssistantManagerClient({ persona }: AssistantManagerClientProps)
             ))}
             {replyLoading ? (
               <div className="ml-auto max-w-[70%] space-y-2">
-                <Skeleton className="h-4 w-40 rounded-xl bg-sage/35" />
-                <Skeleton className="h-4 w-28 rounded-xl bg-sage/25" />
+                <Skeleton className="h-4 w-40 rounded-xl bg-primary/35" />
+                <Skeleton className="h-4 w-28 rounded-xl bg-primary/25" />
               </div>
             ) : null}
           </div>
@@ -237,7 +237,7 @@ export function AssistantManagerClient({ persona }: AssistantManagerClientProps)
             <Button
               type="submit"
               size="lg"
-              className="h-12 rounded-2xl bg-sage px-6 text-forest hover:bg-sage/80"
+              className="h-12 rounded-2xl bg-primary px-6 text-primary-foreground hover:bg-primary/90"
             >
               Send
             </Button>
@@ -258,11 +258,11 @@ export function AssistantManagerClient({ persona }: AssistantManagerClientProps)
           </SheetHeader>
 
           <div className="space-y-4 px-6 pb-2 pt-1">
-            <div className="rounded-2xl border border-border/70 bg-offwhite p-4 text-sm leading-relaxed text-charcoal">
+            <div className="rounded-2xl border border-border/70 bg-offwhite p-4 text-sm leading-relaxed text-foreground">
               {refreshingTemplate ? (
                 <div className="space-y-2">
-                  <Skeleton className="h-4 w-full rounded-xl bg-sage/30" />
-                  <Skeleton className="h-4 w-4/5 rounded-xl bg-sage/20" />
+                  <Skeleton className="h-4 w-full rounded-xl bg-primary/30" />
+                  <Skeleton className="h-4 w-4/5 rounded-xl bg-primary/20" />
                 </div>
               ) : (
                 <>
@@ -280,7 +280,7 @@ export function AssistantManagerClient({ persona }: AssistantManagerClientProps)
                 variant={feedback === "up" ? "secondary" : "outline"}
                 className={cn(
                   "h-10 rounded-2xl",
-                  feedback === "up" && "bg-sage/60 text-forest hover:bg-sage/70",
+                  feedback === "up" && "bg-primary/60 text-forest hover:bg-primary/85",
                 )}
                 onClick={() => {
                   setFeedback("up");
@@ -310,7 +310,7 @@ export function AssistantManagerClient({ persona }: AssistantManagerClientProps)
               <Button
                 type="button"
                 variant="secondary"
-                className="h-10 rounded-2xl bg-sage px-4 text-forest hover:bg-sage/80"
+                className="h-10 rounded-2xl bg-primary px-4 text-primary-foreground hover:bg-primary/90"
                 onClick={askAgain}
               >
                 Ask again

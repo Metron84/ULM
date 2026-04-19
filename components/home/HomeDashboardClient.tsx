@@ -87,11 +87,11 @@ export function HomeDashboardClient({
             <h2 className="text-2xl font-bold tracking-tight text-forest sm:text-3xl">
               Good evening, {displayName}
             </h2>
-            <p className="mt-2 text-sm text-charcoal/75 sm:text-base">
+            <p className="mt-2 text-sm text-muted-foreground sm:text-base">
               Your assistant is ready for this matchday.
             </p>
           </div>
-          <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-sage/35 text-2xl shadow-soft">
+          <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/35 text-2xl shadow-soft">
             {personaEmoji(persona)}
           </div>
         </div>
@@ -99,7 +99,7 @@ export function HomeDashboardClient({
         <div className="rounded-2xl border border-border/70 bg-offwhite px-4 py-3">
           <p className="text-sm font-semibold text-forest">Live ticker / points pulse</p>
           <div className="mt-1 overflow-hidden border-t border-gold/60 pt-2">
-            <p className="text-sm text-charcoal/85">{tickerPool[tickerIndex]}</p>
+            <p className="text-sm text-foreground/85">{tickerPool[tickerIndex]}</p>
           </div>
         </div>
       </header>
@@ -114,7 +114,7 @@ export function HomeDashboardClient({
             <p className="text-2xl font-bold text-gold">
               #{worldCupRank.toLocaleString()} / {worldCupTotal.toLocaleString()}
             </p>
-            <p className="text-sm text-charcoal/75">
+            <p className="text-sm text-muted-foreground">
               Total points: <span className="font-semibold text-forest">{leagueTotalPoints}</span>
             </p>
           </CardContent>
@@ -127,7 +127,7 @@ export function HomeDashboardClient({
           </CardHeader>
           <CardContent className="space-y-2 px-6">
             <p className="text-2xl font-bold text-forest">#{leagueRank}</p>
-            <p className="inline-flex items-center gap-1 text-sm text-charcoal/75">
+            <p className="inline-flex items-center gap-1 text-sm text-muted-foreground">
               {movementUp ? (
                 <ArrowUpRight className="h-4 w-4 text-forest" />
               ) : (
@@ -143,21 +143,21 @@ export function HomeDashboardClient({
         <CardHeader className="px-6">
           <div className="flex items-center justify-between gap-3">
             <CardTitle className="text-forest">Assistant&apos;s Daily Briefing</CardTitle>
-            <Badge variant="secondary" className="rounded-xl bg-sage/45 text-forest">
+            <Badge variant="secondary" className="rounded-xl bg-primary/45 text-forest">
               {personaEmoji(persona)} {personaLabel(persona)}
             </Badge>
           </div>
           <CardDescription>Relevant matchday context in your assistant tone.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3 px-6">
-          <p className="rounded-2xl bg-offwhite p-4 text-sm leading-relaxed text-charcoal">
+          <p className="rounded-2xl bg-offwhite p-4 text-sm leading-relaxed text-foreground">
             {briefing}
           </p>
           <Link href="/assistant">
             <Button
               variant="secondary"
               size="lg"
-              className="h-11 rounded-2xl bg-sage/55 px-5 text-forest hover:bg-sage/70"
+              className="h-11 rounded-2xl bg-primary/55 px-5 text-forest hover:bg-primary/85"
             >
               Ask Assistant
             </Button>
@@ -171,12 +171,12 @@ export function HomeDashboardClient({
           <CardDescription>{nextMatchLabel}</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-4 px-6 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-lg font-semibold text-charcoal">{countdown}</p>
+          <p className="text-lg font-semibold text-foreground">{countdown}</p>
           <Link href="/assistant?function=captain_recommender">
             <Button
               variant="secondary"
               size="lg"
-              className="h-11 rounded-2xl bg-sage px-5 text-forest hover:bg-sage/80"
+              className="h-11 rounded-2xl bg-primary px-5 text-primary-foreground hover:bg-primary/90"
             >
               Captain Recommendation
             </Button>
@@ -195,7 +195,7 @@ export function HomeDashboardClient({
             </Badge>
             <div className="mt-3">
               <Link href="/predictions">
-                <Button className="h-9 w-full rounded-2xl bg-sage text-forest hover:bg-sage/80">
+                <Button className="h-9 w-full rounded-2xl bg-primary text-primary-foreground hover:bg-primary/90">
                   Open Predictions
                 </Button>
               </Link>
@@ -208,10 +208,10 @@ export function HomeDashboardClient({
             <CardTitle className="text-base text-forest">Manage Roster</CardTitle>
           </CardHeader>
           <CardContent className="px-5">
-            <p className="text-xs text-charcoal/70">Set captaincy and optimize squad health.</p>
+            <p className="text-xs text-muted-foreground">Set captaincy and optimize squad health.</p>
             <div className="mt-3">
               <Link href="/roster">
-                <Button className="h-9 w-full rounded-2xl bg-sage text-forest hover:bg-sage/80">
+                <Button className="h-9 w-full rounded-2xl bg-primary text-primary-foreground hover:bg-primary/90">
                   Open Roster
                 </Button>
               </Link>
@@ -224,10 +224,10 @@ export function HomeDashboardClient({
             <CardTitle className="text-base text-forest">Open Trades</CardTitle>
           </CardHeader>
           <CardContent className="px-5">
-            <p className="text-xs text-charcoal/70">Review market actions and commissioner flow.</p>
+            <p className="text-xs text-muted-foreground">Review market actions and commissioner flow.</p>
             <div className="mt-3">
               <Link href="/trades">
-                <Button className="h-9 w-full rounded-2xl bg-sage text-forest hover:bg-sage/80">
+                <Button className="h-9 w-full rounded-2xl bg-primary text-primary-foreground hover:bg-primary/90">
                   Open Trades
                 </Button>
               </Link>
@@ -240,10 +240,10 @@ export function HomeDashboardClient({
             <CardTitle className="text-base text-forest">World Cup Hub</CardTitle>
           </CardHeader>
           <CardContent className="px-5">
-            <p className="text-xs text-charcoal/70">Track knockout momentum and rank pulse.</p>
+            <p className="text-xs text-muted-foreground">Track knockout momentum and rank pulse.</p>
             <div className="mt-3">
               <Link href="/worldcup">
-                <Button className="h-9 w-full rounded-2xl bg-sage text-forest hover:bg-sage/80">
+                <Button className="h-9 w-full rounded-2xl bg-primary text-primary-foreground hover:bg-primary/90">
                   Open Hub
                 </Button>
               </Link>

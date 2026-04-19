@@ -131,7 +131,7 @@ export function DraftBoardClient({ data }: DraftBoardClientProps) {
           <Badge variant="secondary" className="rounded-xl bg-offwhite text-forest">
             {data.leagueName}
           </Badge>
-          <Badge variant="secondary" className="rounded-xl bg-sage/45 text-forest">
+          <Badge variant="secondary" className="rounded-xl bg-primary/45 text-forest">
             Draft Mode
           </Badge>
           <Badge variant="secondary" className="rounded-xl bg-gold/20 text-gold">
@@ -164,8 +164,8 @@ export function DraftBoardClient({ data }: DraftBoardClientProps) {
                     className={cn(
                       "h-8 rounded-xl px-3",
                       positionFilter === position
-                        ? "bg-sage text-forest hover:bg-sage/80"
-                        : "bg-card text-charcoal",
+                        ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                        : "bg-card text-foreground",
                     )}
                     onClick={() => setPositionFilter(position)}
                   >
@@ -191,17 +191,17 @@ export function DraftBoardClient({ data }: DraftBoardClientProps) {
                     />
                     <div className="min-w-0">
                       <p className="truncate font-semibold text-forest">{player.name}</p>
-                      <p className="text-xs text-charcoal/70">{player.position}</p>
+                      <p className="text-xs text-muted-foreground">{player.position}</p>
                     </div>
                   </div>
-                  <div className="mt-3 flex items-center justify-between text-xs text-charcoal/75">
+                  <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
                     <span>SofaScore</span>
                     <span className="font-semibold text-forest">{player.rating.toFixed(1)}</span>
                   </div>
                   <Button
                     type="button"
                     size="sm"
-                    className="mt-3 h-9 w-full rounded-2xl bg-sage text-forest hover:bg-sage/80"
+                    className="mt-3 h-9 w-full rounded-2xl bg-primary text-primary-foreground hover:bg-primary/90"
                     disabled={!isUsersTurn || isDraftComplete}
                     onClick={() => handlePick(player)}
                   >
@@ -220,17 +220,17 @@ export function DraftBoardClient({ data }: DraftBoardClientProps) {
           </CardHeader>
           <CardContent className="space-y-4 px-6">
             <div className="rounded-2xl border border-border/70 bg-offwhite p-4 text-center">
-              <p className="text-xs uppercase tracking-[0.14em] text-charcoal/65">Round</p>
+              <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Round</p>
               <p className="mt-1 text-3xl font-bold text-forest">{currentRound}</p>
             </div>
             <div className="rounded-2xl border border-border/70 bg-offwhite p-4 text-center">
-              <p className="text-xs uppercase tracking-[0.14em] text-charcoal/65">Current Pick</p>
+              <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Current Pick</p>
               <p className="mt-1 text-3xl font-bold text-gold">#{currentPickIndex}</p>
             </div>
             <div className="rounded-2xl border border-border/70 bg-offwhite p-4 text-center">
-              <p className="text-xs uppercase tracking-[0.14em] text-charcoal/65">On The Clock</p>
+              <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">On The Clock</p>
               <p className="mt-1 text-3xl font-bold text-forest">{secondsLeft}s</p>
-              <p className="mt-1 text-xs text-charcoal/70">
+              <p className="mt-1 text-xs text-muted-foreground">
                 {isDraftComplete
                   ? "Draft complete"
                   : isUsersTurn
@@ -258,12 +258,12 @@ export function DraftBoardClient({ data }: DraftBoardClientProps) {
           </CardHeader>
           <CardContent className="space-y-3 px-6">
             <div className="rounded-2xl border border-border/70 bg-offwhite px-3 py-2">
-              <p className="text-xs text-charcoal/70">Projected Total</p>
+              <p className="text-xs text-muted-foreground">Projected Total</p>
               <p className="text-xl font-bold text-gold">{projectedTotal} pts</p>
             </div>
             <div className="max-h-[56vh] space-y-2 overflow-y-auto pr-1">
               {draftedPlayers.length === 0 ? (
-                <p className="rounded-2xl border border-border/70 bg-offwhite p-3 text-sm text-charcoal/70">
+                <p className="rounded-2xl border border-border/70 bg-offwhite p-3 text-sm text-muted-foreground">
                   No picks yet. Start drafting from the player pool.
                 </p>
               ) : (
@@ -272,9 +272,9 @@ export function DraftBoardClient({ data }: DraftBoardClientProps) {
                     key={player.id}
                     className="rounded-2xl border border-border/70 bg-offwhite px-3 py-2"
                   >
-                    <p className="text-xs text-charcoal/70">Pick {index + 1}</p>
+                    <p className="text-xs text-muted-foreground">Pick {index + 1}</p>
                     <p className="font-semibold text-forest">{player.name}</p>
-                    <p className="text-xs text-charcoal/70">
+                    <p className="text-xs text-muted-foreground">
                       {player.position} • {player.projectedPoints} projected pts
                     </p>
                   </article>

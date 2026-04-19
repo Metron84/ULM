@@ -80,7 +80,7 @@ type PlayerCardProps = {
 function ratingClass(rating: number) {
   if (rating >= 7.8) return "text-gold";
   if (rating >= 7.0) return "text-forest";
-  return "text-charcoal/75";
+  return "text-muted-foreground";
 }
 
 function leagueAccentClass(accent: RosterPlayer["leagueAccent"]) {
@@ -121,14 +121,14 @@ function SortablePlayerCard({
             {player.isWorldCup ? `${player.countryFlag} ` : null}
             {player.name}
           </p>
-          <p className="text-xs text-charcoal/70">
+          <p className="text-xs text-muted-foreground">
             {player.position} • {player.competitionName}
           </p>
         </div>
       </div>
 
       <div className="mt-3 flex items-center justify-between gap-2">
-        <span className="text-xs text-charcoal/70">SofaScore</span>
+        <span className="text-xs text-muted-foreground">SofaScore</span>
         <span className={cn("text-sm font-semibold", ratingClass(player.rating))}>
           {player.rating.toFixed(1)}
         </span>
@@ -338,8 +338,8 @@ export function RosterManagerClient({
           <div>
             <h2 className="text-3xl font-bold tracking-tight text-forest">My Roster</h2>
             <div className="mt-3 flex flex-wrap items-center gap-2">
-              <span className="text-sm text-charcoal/75">{leagueName}</span>
-              <Badge variant="secondary" className="rounded-xl bg-sage/45 text-forest">
+              <span className="text-sm text-muted-foreground">{leagueName}</span>
+              <Badge variant="secondary" className="rounded-xl bg-primary/45 text-forest">
                 {competitionName}
               </Badge>
               <Badge variant="secondary" className="rounded-xl bg-offwhite text-forest">
@@ -349,9 +349,9 @@ export function RosterManagerClient({
           </div>
 
           <div className="text-right">
-            <p className="text-xs uppercase tracking-[0.14em] text-charcoal/65">Total Team Points</p>
+            <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Total Team Points</p>
             <p className="text-2xl font-bold text-gold">{totalTeamPoints}</p>
-            <p className="text-sm text-charcoal/75">
+            <p className="text-sm text-muted-foreground">
               Projected Points This Matchday:{" "}
               <span className="font-semibold text-forest">{projectedPointsThisMatchday}</span>
             </p>
@@ -369,7 +369,7 @@ export function RosterManagerClient({
           </Badge>
           <Button
             type="button"
-            className="ml-auto h-12 rounded-3xl bg-sage px-6 text-base font-semibold text-forest hover:bg-sage/80"
+            className="ml-auto h-12 rounded-3xl bg-primary px-6 text-base font-semibold text-primary-foreground hover:bg-primary/90"
             onClick={() => setManageOpen(true)}
           >
             Manage Squad
@@ -428,7 +428,7 @@ export function RosterManagerClient({
             <SheetDescription>{selectedPlayer?.position} · Recent performance snapshot</SheetDescription>
           </SheetHeader>
           <div className="space-y-3 px-6 pb-6">
-            <div className="rounded-2xl border border-border/70 bg-offwhite p-4 text-sm text-charcoal">
+            <div className="rounded-2xl border border-border/70 bg-offwhite p-4 text-sm text-foreground">
               <p>
                 Current SofaScore:{" "}
                 <span className={cn("font-semibold", selectedPlayer && ratingClass(selectedPlayer.rating))}>
@@ -445,7 +445,7 @@ export function RosterManagerClient({
                 {showBreakdown ? "Hide points breakdown" : "Show points breakdown"}
               </Button>
               {showBreakdown && selectedPlayer ? (
-                <div className="mt-3 grid grid-cols-2 gap-2 rounded-2xl border border-border/60 bg-card/85 p-3 text-xs text-charcoal/85">
+                <div className="mt-3 grid grid-cols-2 gap-2 rounded-2xl border border-border/60 bg-card/85 p-3 text-xs text-foreground/85">
                   <p>Goals: {selectedPlayer.pointsBreakdown.goals}</p>
                   <p>Assists: {selectedPlayer.pointsBreakdown.assists}</p>
                   <p>Bonus: {selectedPlayer.pointsBreakdown.bonusPoints}</p>
@@ -487,8 +487,8 @@ export function RosterManagerClient({
                     className={cn(
                       "h-8 rounded-xl px-3",
                       positionFilter === position
-                        ? "bg-sage text-forest hover:bg-sage/80"
-                        : "bg-card text-charcoal",
+                        ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                        : "bg-card text-foreground",
                     )}
                     onClick={() => setPositionFilter(position)}
                   >
@@ -497,7 +497,7 @@ export function RosterManagerClient({
                 ))}
               </div>
               {selectedSwapTargetId ? (
-                <p className="mt-2 text-xs text-charcoal/70">
+                <p className="mt-2 text-xs text-muted-foreground">
                   Swap target selected. Choose a player card and click swap.
                 </p>
               ) : null}
@@ -525,18 +525,18 @@ export function RosterManagerClient({
                             {player.isWorldCup ? `${player.countryFlag} ` : null}
                             {player.name}
                           </p>
-                          <p className="text-xs text-charcoal/75">
+                          <p className="text-xs text-muted-foreground">
                             {player.position} • {player.competitionName}
                           </p>
-                          <p className="text-xs text-charcoal/75">
+                          <p className="text-xs text-muted-foreground">
                             Rating {player.rating.toFixed(1)} • {player.totalPoints} pts
                           </p>
-                          <p className="mt-1 text-[11px] text-charcoal/70">{player.recentForm}</p>
+                          <p className="mt-1 text-[11px] text-muted-foreground">{player.recentForm}</p>
                         </div>
                       </div>
                       <div className="mt-3 flex flex-wrap gap-2">
                         {player.inRoster ? (
-                          <Badge variant="secondary" className="rounded-xl bg-sage/40 text-forest">
+                          <Badge variant="secondary" className="rounded-xl bg-primary/40 text-forest">
                             In Roster
                           </Badge>
                         ) : (
@@ -544,7 +544,7 @@ export function RosterManagerClient({
                             <Button
                               type="button"
                               size="sm"
-                              className="h-8 rounded-xl bg-sage text-forest hover:bg-sage/80"
+                              className="h-8 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90"
                               disabled={!canAdd || submittingAction}
                               onClick={() => handleAddToBench(player.id)}
                             >
@@ -568,7 +568,7 @@ export function RosterManagerClient({
                 })}
               </div>
               {filteredPool.length === 0 ? (
-                <div className="rounded-2xl border border-border/70 bg-offwhite p-4 text-sm text-charcoal/70">
+                <div className="rounded-2xl border border-border/70 bg-offwhite p-4 text-sm text-muted-foreground">
                   No players match your current filters.
                 </div>
               ) : null}

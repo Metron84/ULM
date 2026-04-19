@@ -75,7 +75,7 @@ export default function FaqPage() {
             <CardTitle className="text-3xl font-bold tracking-tight text-forest sm:text-4xl">
               Frequently Asked Questions
             </CardTitle>
-            <CardDescription className="mt-2 text-sm text-charcoal/75 sm:text-base">
+            <CardDescription className="mt-2 text-sm text-muted-foreground sm:text-base">
               Everything you need to know about Ultimate League Manager
             </CardDescription>
           </CardHeader>
@@ -101,7 +101,7 @@ export default function FaqPage() {
                     +
                   </span>
                 </summary>
-                <p className="mt-3 text-sm leading-relaxed text-charcoal/85">{item.answer}</p>
+                <p className="mt-3 text-sm leading-relaxed text-foreground/85">{item.answer}</p>
               </details>
             ))}
           </CardContent>

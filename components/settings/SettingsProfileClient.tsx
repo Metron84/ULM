@@ -30,7 +30,7 @@ const PREVIOUS_PERSONA_STORAGE_KEY = "ulm-assistant-prev-persona";
 const REAPPOINT_WINDOW_DAYS = 14;
 
 function personaCardClass(persona: AssistantPersona) {
-  if (persona === "analyst") return "bg-sage/35 text-forest";
+  if (persona === "analyst") return "bg-primary/35 text-forest";
   if (persona === "diehard_fan") return "bg-gold/25 text-forest";
   return "bg-forest text-offwhite";
 }
@@ -162,21 +162,21 @@ export function SettingsProfileClient({ data }: SettingsProfileClientProps) {
         <CardContent className="space-y-4 px-6">
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="rounded-2xl border border-border/70 bg-offwhite p-4">
-              <p className="text-xs uppercase tracking-wide text-charcoal/60">Display Name</p>
+              <p className="text-xs uppercase tracking-wide text-muted-foreground">Display Name</p>
               <input
                 value={displayName}
                 onChange={(event) => setDisplayName(event.target.value)}
-                className="mt-2 h-11 w-full rounded-2xl border border-border bg-card px-3 text-sm text-charcoal"
+                className="mt-2 h-11 w-full rounded-2xl border border-border bg-card px-3 text-sm text-foreground"
               />
             </div>
             <div className="rounded-2xl border border-border/70 bg-offwhite p-4">
-              <p className="text-xs uppercase tracking-wide text-charcoal/60">Email</p>
+              <p className="text-xs uppercase tracking-wide text-muted-foreground">Email</p>
               <p className="mt-2 break-all text-sm font-medium text-forest">{data.email}</p>
             </div>
           </div>
 
           <div className="rounded-2xl border border-border/70 bg-offwhite p-4">
-            <p className="text-xs uppercase tracking-wide text-charcoal/60">Assistant Persona</p>
+            <p className="text-xs uppercase tracking-wide text-muted-foreground">Assistant Persona</p>
             <p className="mt-2 text-sm font-semibold text-forest">
               {personaEmoji(assistantPersona)} {currentPersonaLabel}
             </p>
@@ -184,7 +184,7 @@ export function SettingsProfileClient({ data }: SettingsProfileClientProps) {
 
           <Button
             type="button"
-            className="h-11 rounded-2xl bg-sage px-5 text-forest hover:bg-sage/80"
+            className="h-11 rounded-2xl bg-primary px-5 text-primary-foreground hover:bg-primary/90"
             onClick={saveDisplayName}
             disabled={savingProfile}
           >
@@ -232,7 +232,7 @@ export function SettingsProfileClient({ data }: SettingsProfileClientProps) {
           ) : (
             <div className="space-y-3 rounded-2xl border border-border/70 bg-offwhite p-4">
               <p className="text-sm font-semibold text-forest">Choose New Assistant</p>
-              <p className="text-xs text-charcoal/70">
+              <p className="text-xs text-muted-foreground">
                 {canChooseNewAssistant
                   ? "Appointment window is open."
                   : `Appointment unlocks on ${reappointAvailableAt?.toLocaleDateString()}.`}
@@ -249,7 +249,7 @@ export function SettingsProfileClient({ data }: SettingsProfileClientProps) {
                       "rounded-2xl border px-3 py-2 text-sm font-semibold transition",
                       "border-border bg-card text-forest",
                       !canChooseNewAssistant && "cursor-not-allowed opacity-55",
-                      canChooseNewAssistant && "hover:border-sage/70 hover:bg-sage/20",
+                      canChooseNewAssistant && "hover:border-sage/70 hover:bg-primary/20",
                     )}
                   >
                     {personaEmoji(persona)} {personaLabel(persona)}
@@ -273,7 +273,7 @@ export function SettingsProfileClient({ data }: SettingsProfileClientProps) {
             className="flex w-full items-center justify-between rounded-2xl border border-border/70 bg-offwhite px-4 py-3 text-left"
           >
             <span className="text-sm font-medium text-forest">Match alerts</span>
-            <Badge className={cn("rounded-xl", matchAlertsEnabled ? "bg-sage/50 text-forest" : "bg-card text-charcoal/70")}>
+            <Badge className={cn("rounded-xl", matchAlertsEnabled ? "bg-primary/50 text-forest" : "bg-card text-muted-foreground")}>
               {matchAlertsEnabled ? "On" : "Off"}
             </Badge>
           </button>
@@ -284,7 +284,7 @@ export function SettingsProfileClient({ data }: SettingsProfileClientProps) {
             className="flex w-full items-center justify-between rounded-2xl border border-border/70 bg-offwhite px-4 py-3 text-left"
           >
             <span className="text-sm font-medium text-forest">Trade updates</span>
-            <Badge className={cn("rounded-xl", tradeUpdatesEnabled ? "bg-sage/50 text-forest" : "bg-card text-charcoal/70")}>
+            <Badge className={cn("rounded-xl", tradeUpdatesEnabled ? "bg-primary/50 text-forest" : "bg-card text-muted-foreground")}>
               {tradeUpdatesEnabled ? "On" : "Off"}
             </Badge>
           </button>
@@ -295,7 +295,7 @@ export function SettingsProfileClient({ data }: SettingsProfileClientProps) {
             className="flex w-full items-center justify-between rounded-2xl border border-border/70 bg-offwhite px-4 py-3 text-left"
           >
             <span className="text-sm font-medium text-forest">Assistant messages</span>
-            <Badge className={cn("rounded-xl", assistantMessagesEnabled ? "bg-sage/50 text-forest" : "bg-card text-charcoal/70")}>
+            <Badge className={cn("rounded-xl", assistantMessagesEnabled ? "bg-primary/50 text-forest" : "bg-card text-muted-foreground")}>
               {assistantMessagesEnabled ? "On" : "Off"}
             </Badge>
           </button>
@@ -306,7 +306,7 @@ export function SettingsProfileClient({ data }: SettingsProfileClientProps) {
             className="flex w-full items-center justify-between rounded-2xl border border-border/70 bg-offwhite px-4 py-3 text-left"
           >
             <span className="text-sm font-medium text-forest">Private profile mode</span>
-            <Badge className={cn("rounded-xl", privacyMode ? "bg-gold/25 text-gold" : "bg-card text-charcoal/70")}>
+            <Badge className={cn("rounded-xl", privacyMode ? "bg-gold/25 text-gold" : "bg-card text-muted-foreground")}>
               {privacyMode ? "Enabled" : "Disabled"}
             </Badge>
           </button>
@@ -321,19 +321,19 @@ export function SettingsProfileClient({ data }: SettingsProfileClientProps) {
         <CardContent className="flex flex-wrap gap-2 px-6">
           <Link
             href="/leagues"
-            className="inline-flex h-10 items-center rounded-2xl border border-border bg-card px-4 text-sm font-medium text-forest hover:bg-sage/20"
+            className="inline-flex h-10 items-center rounded-2xl border border-border bg-card px-4 text-sm font-medium text-forest hover:bg-primary/20"
           >
             My Leagues
           </Link>
           <Link
             href="/rules"
-            className="inline-flex h-10 items-center rounded-2xl border border-border bg-card px-4 text-sm font-medium text-forest hover:bg-sage/20"
+            className="inline-flex h-10 items-center rounded-2xl border border-border bg-card px-4 text-sm font-medium text-forest hover:bg-primary/20"
           >
             Rules
           </Link>
           <Link
             href="/faq"
-            className="inline-flex h-10 items-center rounded-2xl border border-border bg-card px-4 text-sm font-medium text-forest hover:bg-sage/20"
+            className="inline-flex h-10 items-center rounded-2xl border border-border bg-card px-4 text-sm font-medium text-forest hover:bg-primary/20"
           >
             FAQ
           </Link>
@@ -346,7 +346,7 @@ export function SettingsProfileClient({ data }: SettingsProfileClientProps) {
           <CardDescription>We are here to help your league run smoothly.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3 px-6">
-          <p className="text-sm text-charcoal/80">
+          <p className="text-sm text-muted-foreground">
             Email:{" "}
             <a
               href="mailto:info@metronventures.com"
@@ -357,7 +357,7 @@ export function SettingsProfileClient({ data }: SettingsProfileClientProps) {
           </p>
           <Button
             type="button"
-            className="h-11 rounded-2xl bg-sage px-5 text-forest hover:bg-sage/80"
+            className="h-11 rounded-2xl bg-primary px-5 text-primary-foreground hover:bg-primary/90"
             onClick={() => {
               setSupportPulse(true);
               window.location.href = "mailto:info@metronventures.com?subject=ULM%20Support";
@@ -386,7 +386,7 @@ export function SettingsProfileClient({ data }: SettingsProfileClientProps) {
             </Button>
             <Button
               type="button"
-              className="bg-gold text-forest hover:bg-gold/85"
+              className="bg-reward text-reward-foreground hover:bg-gold/85"
               onClick={fireAssistant}
             >
               Confirm Fire
