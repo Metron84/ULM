@@ -10,8 +10,13 @@ const protectedPrefixes = [
   "/predictions",
   "/trades",
   "/leagues",
+  "/draft",
   "/roster",
   "/assistant",
+  "/rules",
+  "/faq",
+  "/stats",
+  "/settings",
   "/worldcup",
   "/world-cup",
 ];

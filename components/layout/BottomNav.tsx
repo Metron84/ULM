@@ -2,28 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Trophy, Users, Sparkles, Globe } from "lucide-react";
+
+import { isNavItemActive, layoutNavItems } from "@/components/layout/nav-items";
 import { cn } from "@/lib/utils";
-
-type NavItem = {
-  label: string;
-  href: string;
-  icon: React.ComponentType<{ className?: string }>;
-  activePrefixes?: string[];
-};
-
-const items: NavItem[] = [
-  { label: "Home", href: "/home", icon: Home },
-  {
-    label: "My Leagues",
-    href: "/leagues",
-    icon: Trophy,
-    activePrefixes: ["/leagues", "/predictions", "/trades"],
-  },
-  { label: "Roster", href: "/roster", icon: Users },
-  { label: "Assistant", href: "/assistant", icon: Sparkles },
-  { label: "World Cup", href: "/worldcup", icon: Globe },
-];
 
 type BottomNavProps = {
   className?: string;
@@ -36,25 +17,22 @@ export function BottomNav({ className }: BottomNavProps) {
     <nav
       aria-label="Primary"
       className={cn(
-        "fixed inset-x-0 bottom-0 z-40 px-3 pb-3 sm:px-6 sm:pb-4",
+        "fixed inset-x-0 bottom-0 z-40 px-3 pb-3 sm:px-6 sm:pb-4 lg:hidden",
         "pointer-events-none",
         className,
       )}
     >
       <ul
         className={cn(
-          "pointer-events-auto mx-auto grid max-w-3xl grid-cols-5 items-stretch rounded-t-3xl border border-border/70 bg-card/90 p-2 shadow-[0_-14px_35px_-22px_rgba(10,61,42,0.35)] backdrop-blur-xl",
+          "pointer-events-auto mx-auto flex max-w-5xl items-stretch gap-1 overflow-x-auto rounded-t-3xl border border-border/70 bg-card/90 p-2 shadow-[0_-14px_35px_-22px_rgba(10,61,42,0.35)] backdrop-blur-xl",
           "supports-[backdrop-filter]:bg-card/80",
         )}
       >
-        {items.map((item) => {
+        {layoutNavItems.map((item) => {
           const Icon = item.icon;
-          const prefixes = item.activePrefixes ?? [item.href];
-          const isActive = prefixes.some(
-            (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
-          );
+          const isActive = isNavItemActive(pathname, item);
           return (
-            <li key={item.href} className="min-w-0">
+            <li key={item.href} className="min-w-[74px] flex-1">
               <Link
                 href={item.href}
                 aria-current={isActive ? "page" : undefined}

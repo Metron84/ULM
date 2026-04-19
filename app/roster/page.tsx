@@ -15,11 +15,16 @@ export default async function RosterPage() {
     <MainLayout>
       <RosterManagerClient
         persona={data.persona}
+        rosterId={data.rosterId}
         leagueName={data.leagueName}
         competitionName={data.competitionName}
-        projectedPoints={data.projectedPoints}
+        squadSize={data.squadSize}
+        benchCapacity={data.benchCapacity}
+        totalTeamPoints={data.totalTeamPoints}
+        projectedPointsThisMatchday={data.projectedPointsThisMatchday}
         startingPlayers={data.startingPlayers}
         benchPlayers={data.benchPlayers}
+        availablePlayers={data.availablePlayers}
       />
     </MainLayout>
   );

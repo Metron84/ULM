@@ -1,32 +1,14 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 
 import { MainLayout } from "@/components/layout/MainLayout";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { HomeDashboardClient } from "@/components/home/HomeDashboardClient";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  personaEmoji,
-  personaLabel,
   postMatchReviewFallbacks,
   type AssistantPersona,
 } from "@/lib/persona";
 import { hasSupabaseEnv } from "@/lib/supabase";
 import { createServerClient } from "@/lib/supabase/server";
-
-type FixtureCard = {
-  id: string;
-  home: string;
-  away: string;
-  dateLabel: string;
-};
+import { getWorldCupHubData } from "@/lib/worldcup";
 
 export const metadata: Metadata = {
   title: "Home | Ultimate League Manager",
@@ -47,12 +29,20 @@ export default async function HomePage() {
   let displayName = "Manager";
   let persona: AssistantPersona = "analyst";
   let briefing = postMatchReviewFallbacks.analyst[0];
-  let briefingSeedKey = "ulm-default-seed";
-  const fixtures: FixtureCard[] = [];
+  let worldCupRank = 184;
+  let worldCupTotal = 1247893;
+  let leagueLabel = "Your Primary League";
+  let leagueRank = 7;
+  let leagueTotalPoints = 324;
+  let leagueMovement = 1;
+  let predictionsCompleted = 3;
+  let predictionsTotal = 5;
+  let nextMatchLabel = "France vs England • Sat, Jun 13";
+  let nextMatchIso: string | null = null;
   const tickerEntries: string[] = [
+    "Points being tabulated this matchday",
     "Mbappé 7.9 • +2 bonus • 14 pts this week",
     "Salah form watch • 3 returns in last 4",
-    "Haaland projection uplift • strong fixture window",
   ];
 
   if (hasSupabaseEnv()) {
@@ -62,7 +52,6 @@ export default async function HomePage() {
     } = await supabase.auth.getUser();
 
     if (user) {
-      briefingSeedKey = user.id;
       const { data: profile } = await supabase
         .from("users")
         .select("display_name, assistant_persona")
@@ -89,7 +78,7 @@ export default async function HomePage() {
         .from("assistant_templates")
         .select("template_text")
         .eq("persona", persona)
-        .eq("function_type", "post_match_review")
+        .in("function_type", ["post_match_review", "roster_health"])
         .limit(6);
 
       const reviewPool =
@@ -97,241 +86,146 @@ export default async function HomePage() {
         postMatchReviewFallbacks[persona];
 
       if (reviewPool.length > 0) {
-        const hash = briefingSeedKey
+        const hash = user.id
           .split("")
           .reduce((sum, char, index) => sum + char.charCodeAt(0) * (index + 1), 0);
         briefing = reviewPool[hash % reviewPool.length]!;
       }
 
-      const { data: nextFixtures } = await supabase
+      const { data: participant } = await supabase
+        .from("league_participants")
+        .select("id,rank,total_points,league_id,league:leagues(name,competition_id)")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: true })
+        .limit(1)
+        .maybeSingle();
+
+      if (participant?.id) {
+        leagueLabel =
+          (participant.league as { name?: string | null } | null)?.name ?? "Your League";
+        leagueRank = (participant.rank as number | null) ?? 7;
+        leagueTotalPoints = (participant.total_points as number | null) ?? 324;
+
+        const { data: weeklyStanding } = await supabase
+          .from("prediction_standings")
+          .select("rank,total_prediction_points")
+          .eq("league_participant_id", participant.id)
+          .eq("week_number", 1)
+          .maybeSingle();
+
+        if (weeklyStanding?.rank) {
+          const standingRank = weeklyStanding.rank as number;
+          leagueMovement = Math.max(-3, Math.min(3, leagueRank - standingRank));
+        } else {
+          leagueMovement = leagueRank <= 5 ? 1 : -1;
+        }
+
+        const competitionId =
+          (participant.league as { competition_id?: string | null } | null)?.competition_id ?? null;
+
+        if (competitionId) {
+          const { count: scheduledCount } = await supabase
+            .from("fixtures")
+            .select("id", { count: "exact", head: true })
+            .eq("competition_id", competitionId)
+            .eq("status", "scheduled");
+
+          const { count: predictionCount } = await supabase
+            .from("predictions")
+            .select("id", { count: "exact", head: true })
+            .eq("league_participant_id", participant.id);
+
+          predictionsTotal = Math.max(1, Math.min(5, Number(scheduledCount ?? 5)));
+          predictionsCompleted = Math.min(
+            predictionsTotal,
+            Number(predictionCount ?? predictionsCompleted),
+          );
+        }
+      }
+
+      const { data: topPerformers } = await supabase
+        .from("player_performances")
+        .select("total_points,bonus_points,player:players(name)")
+        .order("total_points", { ascending: false })
+        .limit(3);
+
+      const performerTicker = (topPerformers ?? [])
+        .map((row) => {
+          const name =
+            ((row.player as { name?: string | null } | null)?.name as string | undefined) ??
+            "Top performer";
+          const total = Number(row.total_points ?? 0);
+          const bonus = Number(row.bonus_points ?? 0);
+          return `${name} • ${total} pts • +${bonus} bonus`;
+        })
+        .filter(Boolean);
+
+      if (performerTicker.length > 0) {
+        tickerEntries.unshift(...performerTicker);
+      }
+
+      const { data: nextFixture } = await supabase
         .from("fixtures")
         .select(
           "id,match_date,home_team:real_teams!fixtures_home_team_id_fkey(short_name,name),away_team:real_teams!fixtures_away_team_id_fkey(short_name,name)",
         )
         .eq("status", "scheduled")
         .order("match_date", { ascending: true })
-        .limit(3);
+        .limit(1)
+        .maybeSingle();
 
-      nextFixtures?.forEach((fixture) => {
-        const matchDate = fixture.match_date ? new Date(fixture.match_date) : null;
-        fixtures.push({
-          id: fixture.id as string,
-          home:
-            (fixture.home_team as { short_name?: string | null; name?: string | null } | null)
-              ?.short_name ??
-            (fixture.home_team as { short_name?: string | null; name?: string | null } | null)
-              ?.name ??
-            "Home",
-          away:
-            (fixture.away_team as { short_name?: string | null; name?: string | null } | null)
-              ?.short_name ??
-            (fixture.away_team as { short_name?: string | null; name?: string | null } | null)
-              ?.name ??
-            "Away",
-          dateLabel: matchDate
-            ? matchDate.toLocaleDateString("en-US", {
+      if (nextFixture?.id) {
+        const home =
+          (nextFixture.home_team as { short_name?: string | null; name?: string | null } | null)
+            ?.short_name ??
+          (nextFixture.home_team as { name?: string | null } | null)?.name ??
+          "Home";
+        const away =
+          (nextFixture.away_team as { short_name?: string | null; name?: string | null } | null)
+            ?.short_name ??
+          (nextFixture.away_team as { name?: string | null } | null)?.name ??
+          "Away";
+        const matchDate = nextFixture.match_date
+          ? new Date(nextFixture.match_date as string)
+          : null;
+        nextMatchLabel = `${home} vs ${away}${
+          matchDate
+            ? ` • ${matchDate.toLocaleDateString("en-US", {
                 weekday: "short",
                 month: "short",
                 day: "numeric",
-              })
-            : "TBD",
-        });
-      });
+              })}`
+            : ""
+        }`;
+        nextMatchIso = (nextFixture.match_date as string | null) ?? null;
+      }
 
-      const fixtureTicker = fixtures
-        .slice(0, 2)
-        .map((fixture) => `${fixture.home} vs ${fixture.away} • ${fixture.dateLabel}`);
-      if (fixtureTicker.length > 0) {
-        tickerEntries.unshift(...fixtureTicker);
+      const worldCup = await getWorldCupHubData();
+      if (worldCup) {
+        worldCupRank = worldCup.globalRank;
+        worldCupTotal = worldCup.globalTotal;
       }
     }
   }
 
-  if (fixtures.length === 0) {
-    fixtures.push(
-      { id: "f-1", home: "FRA", away: "ENG", dateLabel: "Sat, Jun 13" },
-      { id: "f-2", home: "ARG", away: "BRA", dateLabel: "Sun, Jun 14" },
-      { id: "f-3", home: "POR", away: "ESP", dateLabel: "Mon, Jun 15" },
-    );
-  }
-
   return (
     <MainLayout>
-      <section className="space-y-5 sm:space-y-6">
-        <header className="space-y-4 rounded-3xl border border-border/70 bg-card/85 p-6 shadow-soft sm:p-8">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <h2 className="text-2xl font-bold tracking-tight text-forest sm:text-3xl">
-                Good evening, {displayName}
-              </h2>
-              <p className="mt-2 text-sm text-charcoal/75 sm:text-base">
-                Your assistant is ready for today&apos;s matchday decisions.
-              </p>
-            </div>
-            <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-sage/35 text-2xl shadow-soft">
-              {personaEmoji(persona)}
-            </div>
-          </div>
-
-          <div className="rounded-2xl border border-border/70 bg-offwhite px-4 py-3">
-            <p className="text-sm font-semibold text-forest">Live ticker</p>
-            <div className="mt-1 overflow-hidden border-b border-gold/55 pb-2">
-              <p className="text-sm text-charcoal/85">
-                {tickerEntries.slice(0, 3).join("   •   ")}
-              </p>
-            </div>
-          </div>
-        </header>
-
-        <div className="grid gap-5 lg:grid-cols-3">
-          <Card className="rounded-3xl border-border/70 bg-card/90 py-5 shadow-soft">
-            <CardHeader className="px-6">
-              <CardTitle className="text-forest">Your Ranks</CardTitle>
-              <CardDescription>Today&apos;s snapshot across competitions.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4 px-6 text-sm">
-              <p className="rounded-2xl bg-offwhite p-3 text-charcoal">
-                World Cup Global:{" "}
-                <span className="font-semibold text-gold">#184</span> of 1.2M
-              </p>
-              <p className="rounded-2xl bg-offwhite p-3 text-charcoal">
-                Big 5 Leagues: <span className="font-semibold text-forest">#7</span> in your
-                private league
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="rounded-3xl border-border/70 bg-card/90 py-5 shadow-soft lg:col-span-2">
-            <CardHeader className="px-6">
-              <div className="flex items-center justify-between gap-3">
-                <CardTitle className="text-forest">Assistant&apos;s Daily Briefing</CardTitle>
-                <Badge variant="secondary" className="rounded-xl bg-sage/45 text-forest">
-                  {personaLabel(persona)}
-                </Badge>
-              </div>
-              <CardDescription>
-                Tailored to your persona and current matchday context.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="px-6">
-              <p className="rounded-2xl bg-offwhite p-4 text-sm leading-relaxed text-charcoal">
-                {briefing}
-              </p>
-            </CardContent>
-            <CardFooter className="border-0 bg-transparent px-6 pt-1">
-              <Link href="/assistant">
-                <Button
-                  variant="secondary"
-                  size="lg"
-                  className="h-11 rounded-2xl bg-sage/55 px-5 text-forest hover:bg-sage/70"
-                >
-                  Ask Assistant
-                </Button>
-              </Link>
-            </CardFooter>
-          </Card>
-
-          <Card className="rounded-3xl border-border/70 bg-card/90 py-5 shadow-soft lg:col-span-3">
-            <CardHeader className="px-6">
-              <CardTitle className="text-forest">Next Matchday</CardTitle>
-              <CardDescription>Stay ahead before kickoff.</CardDescription>
-            </CardHeader>
-            <CardContent className="flex flex-col gap-4 px-6 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-lg font-semibold text-charcoal">3 days 14 hours</p>
-              <Link href="/assistant">
-                <Button
-                  variant="secondary"
-                  size="lg"
-                  className="h-11 rounded-2xl bg-sage px-5 text-forest hover:bg-sage/80"
-                >
-                  Captain Recommendation
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
-        </div>
-
-        <Card className="rounded-3xl border-border/70 bg-card/90 py-5 shadow-soft">
-          <CardHeader className="px-6">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <CardTitle className="text-forest">Predictions This Round</CardTitle>
-              <Badge variant="outline" className="rounded-xl border-gold/40 text-gold">
-                3/5 completed
-              </Badge>
-            </div>
-          </CardHeader>
-          <CardContent className="grid gap-3 px-6 md:grid-cols-3">
-            {fixtures.map((fixture) => (
-              <article
-                key={fixture.id}
-                className="rounded-2xl border border-border/70 bg-offwhite p-4 text-sm shadow-soft"
-              >
-                <p className="font-semibold text-forest">
-                  {fixture.home} vs {fixture.away}
-                </p>
-                <p className="mt-1 text-charcoal/70">{fixture.dateLabel}</p>
-              </article>
-            ))}
-          </CardContent>
-          <CardFooter className="border-0 bg-transparent px-6">
-            <Link href="/predictions">
-              <Button
-                variant="secondary"
-                size="lg"
-                className="h-11 rounded-2xl bg-sage px-5 text-forest hover:bg-sage/80"
-              >
-                Make Predictions
-              </Button>
-            </Link>
-          </CardFooter>
-        </Card>
-
-        <Card className="rounded-3xl border-border/70 bg-card/90 py-5 shadow-soft">
-          <CardHeader className="px-6">
-            <CardTitle className="text-forest">Market &amp; Bets</CardTitle>
-            <CardDescription>Trade talks and commissioner approvals.</CardDescription>
-          </CardHeader>
-          <CardContent className="px-6">
-            <p className="rounded-2xl bg-offwhite p-4 text-sm leading-relaxed text-charcoal">
-              Explore player swaps, football memorabilia agreements, and league-approved deals.
-            </p>
-          </CardContent>
-          <CardFooter className="border-0 bg-transparent px-6">
-            <Link href="/trades">
-              <Button
-                variant="secondary"
-                size="lg"
-                className="h-11 rounded-2xl bg-sage px-5 text-forest hover:bg-sage/80"
-              >
-                Open Trade Market
-              </Button>
-            </Link>
-          </CardFooter>
-        </Card>
-
-        <Card className="rounded-3xl border-border/70 bg-card/90 py-5 shadow-soft">
-          <CardHeader className="px-6">
-            <CardTitle className="text-forest">World Cup Hub</CardTitle>
-            <CardDescription>Bracket race, global ranking, and knockout pulse.</CardDescription>
-          </CardHeader>
-          <CardContent className="px-6">
-            <p className="rounded-2xl bg-offwhite p-4 text-sm leading-relaxed text-charcoal">
-              Enter the global stage and track your position as the knockout rounds heat up.
-            </p>
-          </CardContent>
-          <CardFooter className="border-0 bg-transparent px-6">
-            <Link href="/worldcup">
-              <Button
-                variant="secondary"
-                size="lg"
-                className="h-11 rounded-2xl bg-sage px-5 text-forest hover:bg-sage/80"
-              >
-                Open World Cup Hub
-              </Button>
-            </Link>
-          </CardFooter>
-        </Card>
-      </section>
+      <HomeDashboardClient
+        displayName={displayName}
+        persona={persona}
+        briefing={briefing}
+        liveTickerEntries={tickerEntries}
+        worldCupRank={worldCupRank}
+        worldCupTotal={worldCupTotal}
+        leagueLabel={leagueLabel}
+        leagueRank={leagueRank}
+        leagueTotalPoints={leagueTotalPoints}
+        leagueMovement={leagueMovement}
+        nextMatchLabel={nextMatchLabel}
+        nextMatchIso={nextMatchIso}
+        predictionsCompleted={predictionsCompleted}
+        predictionsTotal={predictionsTotal}
+      />
     </MainLayout>
   );
 }

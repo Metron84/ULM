@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { BottomNav } from "@/components/layout/BottomNav";
+import { LeftSidebar } from "@/components/layout/LeftSidebar";
 import { ProtectedRoute } from "@/components/layout/ProtectedRoute";
 import { Badge } from "@/components/ui/badge";
 import { hasSupabaseEnv } from "@/lib/supabase";
@@ -49,9 +50,9 @@ export async function MainLayout({ children }: MainLayoutProps) {
 
   return (
     <ProtectedRoute mode="persona-required">
-      <div className="min-h-screen bg-offwhite pb-28 demo-fade-in">
+      <div className="min-h-screen bg-offwhite pb-28 demo-fade-in lg:pb-8">
         <header className="sticky top-[29px] z-30 border-b border-border/70 bg-offwhite/90 backdrop-blur">
-          <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-5 sm:px-8">
+          <div className="mx-auto flex w-full max-w-[1320px] items-center justify-between px-4 py-5 sm:px-6 lg:px-8">
             <div>
               <p className="text-xs font-medium uppercase tracking-[0.18em] text-forest/60">
                 Ultimate League Manager
@@ -79,7 +80,24 @@ export async function MainLayout({ children }: MainLayoutProps) {
           </div>
         </header>
 
-        <main className="mx-auto w-full max-w-6xl px-6 py-6 sm:px-8 sm:py-8">{children}</main>
+        <div className="mx-auto w-full max-w-[1320px] px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+          <div className="lg:grid lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-6">
+            <LeftSidebar className="hidden lg:block" />
+            <main className="min-w-0">{children}</main>
+          </div>
+        </div>
+
+        <footer className="mx-auto w-full max-w-[1320px] px-4 pb-24 sm:px-6 lg:px-8 lg:pb-8">
+          <div className="rounded-3xl border border-border/70 bg-card/85 p-4 text-center text-sm text-charcoal/75 shadow-soft">
+            Need help?{" "}
+            <a
+              href="mailto:info@metronventures.com"
+              className="font-semibold text-forest underline decoration-gold/70 underline-offset-4"
+            >
+              info@metronventures.com
+            </a>
+          </div>
+        </footer>
 
         <BottomNav />
       </div>

@@ -32,6 +32,21 @@ type PredictionsClientProps = {
   leaderboard: PredictionLeaderboardRow[];
 };
 
+function teamFlag(shortName: string, name: string) {
+  const key = `${shortName} ${name}`.toLowerCase();
+  if (key.includes("fra") || key.includes("france")) return "🇫🇷";
+  if (key.includes("eng") || key.includes("england")) return "🏴";
+  if (key.includes("arg") || key.includes("argentina")) return "🇦🇷";
+  if (key.includes("bra") || key.includes("brazil")) return "🇧🇷";
+  if (key.includes("por") || key.includes("portugal")) return "🇵🇹";
+  if (key.includes("esp") || key.includes("spain")) return "🇪🇸";
+  if (key.includes("nor") || key.includes("norway")) return "🇳🇴";
+  if (key.includes("egy") || key.includes("egypt")) return "🇪🇬";
+  if (key.includes("ita") || key.includes("italy")) return "🇮🇹";
+  if (key.includes("ger") || key.includes("germany")) return "🇩🇪";
+  return "";
+}
+
 function TeamPill({
   shortName,
   name,
@@ -41,6 +56,7 @@ function TeamPill({
   name: string;
   logoUrl: string | null;
 }) {
+  const flag = teamFlag(shortName, name);
   return (
     <div className="flex items-center gap-2">
       {logoUrl ? (
@@ -57,7 +73,10 @@ function TeamPill({
         </span>
       )}
       <div>
-        <p className="text-sm font-semibold text-forest">{shortName}</p>
+        <p className="text-sm font-semibold text-forest">
+          {flag ? `${flag} ` : null}
+          {shortName}
+        </p>
         <p className="text-xs text-charcoal/70">{name}</p>
       </div>
     </div>
@@ -86,6 +105,11 @@ export function PredictionsClient({ fixtures, leaderboard }: PredictionsClientPr
       `${option.name} ${option.teamShort}`.toLowerCase().includes(q),
     );
   }, [activeFixture, scorerSearch]);
+
+  const upcomingFixtures = useMemo(
+    () => fixtures.filter((fixture) => fixture.status !== "finished"),
+    [fixtures],
+  );
 
   const openPredictionSheet = (fixture: FixturePredictionRow) => {
     setActiveFixture(fixture);
@@ -188,79 +212,89 @@ export function PredictionsClient({ fixtures, leaderboard }: PredictionsClientPr
           <CardDescription>Lock your scores and scorer calls before kickoff.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4 px-6">
-          {fixtures.map((fixture) => {
-            const matchDate = new Date(fixture.matchDate);
-            return (
-              <article
-                key={fixture.fixtureId}
-                className="rounded-3xl border border-border/70 bg-offwhite p-4 shadow-soft"
-              >
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex min-w-[220px] items-center gap-4">
-                    <TeamPill
-                      shortName={fixture.homeTeam.shortName}
-                      name={fixture.homeTeam.name}
-                      logoUrl={fixture.homeTeam.logoUrl}
-                    />
-                    <span className="text-sm font-semibold text-charcoal/70">vs</span>
-                    <TeamPill
-                      shortName={fixture.awayTeam.shortName}
-                      name={fixture.awayTeam.name}
-                      logoUrl={fixture.awayTeam.logoUrl}
-                    />
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Badge variant="outline" className="rounded-xl border-border text-charcoal/80">
-                      {matchDate.toLocaleDateString("en-US", {
-                        weekday: "short",
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </Badge>
-                    {fixture.status === "finished" && (
-                      <Badge variant="secondary" className="rounded-xl bg-gold/20 text-gold">
-                        Finished
-                      </Badge>
-                    )}
-                  </div>
-                </div>
-
-                <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-                  {fixture.prediction ? (
-                    <div className="rounded-2xl border border-border/70 bg-card px-3 py-2 text-sm text-charcoal">
-                      <p>
-                        Your prediction:{" "}
-                        <span className="font-semibold text-forest">
-                          {fixture.prediction.homeScore}-{fixture.prediction.awayScore}
-                        </span>
-                        {fixture.prediction.isNoScorer ? (
-                          <span className="ml-2 text-charcoal/70">No goal scorer</span>
-                        ) : (
-                          <span className="ml-2 text-charcoal/70">
-                            Scorer: {fixture.prediction.scorerName ?? "Selected"}
-                          </span>
-                        )}
-                      </p>
+          {upcomingFixtures.length === 0 ? (
+            <p className="rounded-2xl border border-border/70 bg-offwhite p-4 text-sm text-charcoal/75">
+              No upcoming fixtures are available yet. Check back soon for the next prediction window.
+            </p>
+          ) : (
+            upcomingFixtures.map((fixture) => {
+              const matchDate = new Date(fixture.matchDate);
+              return (
+                <article
+                  key={fixture.fixtureId}
+                  className="rounded-3xl border border-border/70 bg-offwhite p-4 shadow-soft"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div className="flex min-w-[220px] items-center gap-4">
+                      <TeamPill
+                        shortName={fixture.homeTeam.shortName}
+                        name={fixture.homeTeam.name}
+                        logoUrl={fixture.homeTeam.logoUrl}
+                      />
+                      <span className="text-sm font-semibold text-charcoal/70">vs</span>
+                      <TeamPill
+                        shortName={fixture.awayTeam.shortName}
+                        name={fixture.awayTeam.name}
+                        logoUrl={fixture.awayTeam.logoUrl}
+                      />
                     </div>
-                  ) : (
-                    <p className="text-sm text-charcoal/70">No prediction yet</p>
-                  )}
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline" className="rounded-xl border-border text-charcoal/80">
+                        {matchDate.toLocaleDateString("en-US", {
+                          weekday: "short",
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </Badge>
+                      {fixture.status === "finished" && (
+                        <Badge variant="secondary" className="rounded-xl bg-gold/20 text-gold">
+                          Finished
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
 
-                  <Button
-                    size="lg"
-                    variant="secondary"
-                    className="h-10 rounded-2xl bg-sage px-4 text-forest hover:bg-sage/80"
-                    onClick={() => openPredictionSheet(fixture)}
-                  >
-                    {fixture.prediction ? "Edit" : "Make Prediction"}
-                    {sparkleBurst && !fixture.prediction ? (
-                      <Sparkles className="ml-1 h-3.5 w-3.5 text-gold gold-sparkle" />
-                    ) : null}
-                  </Button>
-                </div>
-              </article>
-            );
-          })}
+                  <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+                    {fixture.prediction ? (
+                      <div className="rounded-2xl border border-border/70 bg-card px-3 py-2 text-sm text-charcoal">
+                        <p>
+                          Your prediction:{" "}
+                          <span className="font-semibold text-forest">
+                            {fixture.prediction.homeScore}-{fixture.prediction.awayScore}
+                          </span>
+                          {fixture.prediction.isNoScorer ? (
+                            <span className="ml-2 text-charcoal/70">No goal scorer</span>
+                          ) : (
+                            <span className="ml-2 text-charcoal/70">
+                              Scorer: {fixture.prediction.scorerName ?? "Selected"}
+                            </span>
+                          )}
+                        </p>
+                        <p className="mt-1 text-xs text-charcoal/70">
+                          Points earned:{" "}
+                          <span className="font-semibold text-gold">{fixture.prediction.pointsAwarded}</span>
+                        </p>
+                      </div>
+                    ) : (
+                      <p className="text-sm text-charcoal/70">No prediction yet</p>
+                    )}
+
+                    <Button
+                      size="lg"
+                      variant="secondary"
+                      className="h-11 rounded-2xl bg-sage px-5 text-forest hover:bg-sage/80"
+                      onClick={() => openPredictionSheet(fixture)}
+                    >
+                      {fixture.prediction ? "Edit" : "Make Prediction"}
+                      {sparkleBurst && !fixture.prediction ? (
+                        <Sparkles className="ml-1 h-3.5 w-3.5 text-gold gold-sparkle" />
+                      ) : null}
+                    </Button>
+                  </div>
+                </article>
+              );
+            })
+          )}
         </CardContent>
       </Card>
 
@@ -387,6 +421,13 @@ export function PredictionsClient({ fixtures, leaderboard }: PredictionsClientPr
                 </div>
               </div>
             )}
+
+            <div className="rounded-2xl border border-border/70 bg-offwhite p-3 text-xs text-charcoal/75">
+              <p className="font-semibold text-forest">Scoring Rules</p>
+              <p className="mt-1">Correct exact score + correct scorer → 2 points</p>
+              <p>Correct scorer only → 1 point</p>
+              <p>Correct outcome only → 1 point</p>
+            </div>
 
             <Button
               type="button"

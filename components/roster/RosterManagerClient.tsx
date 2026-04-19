@@ -2,31 +2,10 @@
 
 import Image from "next/image";
 import { useMemo, useState } from "react";
-import {
-  DndContext,
-  DragEndEvent,
-  DragOverEvent,
-  DragStartEvent,
-  PointerSensor,
-  TouchSensor,
-  closestCenter,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import {
-  SortableContext,
-  arrayMove,
-  rectSortingStrategy,
-  useSortable,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { ChevronDown, GripVertical, Sparkles } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
-import {
-  assistantTemplates,
-  assistantFunctionMeta,
-} from "@/lib/assistant-templates";
-import { personaEmoji, personaLabel, type AssistantPersona } from "@/lib/persona";
+import { personaLabel, type AssistantPersona } from "@/lib/persona";
 import type { RosterPlayer } from "@/lib/roster";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -44,6 +23,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
   Sheet,
   SheetContent,
   SheetDescription,
@@ -54,19 +40,41 @@ import { cn } from "@/lib/utils";
 
 type RosterManagerClientProps = {
   persona: AssistantPersona;
+  rosterId: string;
   leagueName: string;
   competitionName: string;
-  projectedPoints: number;
+  squadSize: number;
+  benchCapacity: number;
+  totalTeamPoints: number;
+  projectedPointsThisMatchday: number;
   startingPlayers: RosterPlayer[];
   benchPlayers: RosterPlayer[];
+  availablePlayers: Array<{
+    id: string;
+    name: string;
+    position: "GK" | "DEF" | "MID" | "FWD";
+    photoUrl: string;
+    nationality: string | null;
+    countryFlag: string;
+    leagueCode: string | null;
+    leagueAccent: "premier" | "bundesliga" | "laliga" | "seriea" | "ligue1" | "worldcup";
+    isWorldCup: boolean;
+    competitionName: string;
+    rating: number;
+    recentForm: string;
+    totalPoints: number;
+    inRoster: boolean;
+    inStarting: boolean;
+  }>;
 };
-
-type ContainerType = "starting" | "bench";
 
 type PlayerCardProps = {
   player: RosterPlayer;
-  size?: "starting" | "bench";
   onOpenDetails: (player: RosterPlayer) => void;
+  onAssignRole: (playerId: string, role: "captain" | "vice_captain") => Promise<void>;
+  assigningRole: boolean;
+  isSelectedSwapTarget: boolean;
+  onToggleSwapTarget: (playerId: string) => void;
 };
 
 function ratingClass(rating: number) {
@@ -75,73 +83,46 @@ function ratingClass(rating: number) {
   return "text-charcoal/75";
 }
 
-function sortStarting433(players: RosterPlayer[]) {
-  const buckets = {
-    FWD: players.filter((player) => player.position === "FWD"),
-    MID: players.filter((player) => player.position === "MID"),
-    DEF: players.filter((player) => player.position === "DEF"),
-    GK: players.filter((player) => player.position === "GK"),
-  };
-
-  const lineup = [
-    ...buckets.FWD.slice(0, 3),
-    ...buckets.MID.slice(0, 3),
-    ...buckets.DEF.slice(0, 4),
-    ...buckets.GK.slice(0, 1),
-  ];
-
-  const leftovers = players.filter((player) => !lineup.some((item) => item.id === player.id));
-  return [...lineup, ...leftovers].slice(0, 11);
+function leagueAccentClass(accent: RosterPlayer["leagueAccent"]) {
+  if (accent === "premier") return "border-sky-200 bg-sky-50/60";
+  if (accent === "bundesliga") return "border-rose-200 bg-rose-50/60";
+  if (accent === "laliga") return "border-violet-200 bg-violet-50/60";
+  if (accent === "seriea") return "border-emerald-200 bg-emerald-50/60";
+  if (accent === "ligue1") return "border-orange-200 bg-orange-50/60";
+  return "border-gold/35 bg-gold/10";
 }
 
-function SortablePlayerCard({ player, size = "starting", onOpenDetails }: PlayerCardProps) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
-    id: player.id,
-  });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-
+function SortablePlayerCard({
+  player,
+  onOpenDetails,
+  onAssignRole,
+  assigningRole,
+  isSelectedSwapTarget,
+  onToggleSwapTarget,
+}: PlayerCardProps) {
   return (
     <article
-      ref={setNodeRef}
-      style={style}
       className={cn(
-        "relative rounded-3xl border border-border/70 bg-card/95 p-3.5 shadow-soft",
-        "transition-all duration-300 hover:-translate-y-0.5 hover:shadow-glow active:cursor-grabbing",
-        isDragging && "scale-[1.02] shadow-glow ring-2 ring-gold/40",
-        size === "bench" && "min-w-[140px]",
+        "rounded-3xl border p-4 shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-glow",
+        leagueAccentClass(player.leagueAccent),
+        isSelectedSwapTarget && "ring-2 ring-gold",
       )}
-      {...attributes}
-      onClick={() => onOpenDetails(player)}
     >
-      <button
-        type="button"
-        aria-label={`Drag ${player.name}`}
-        className="absolute right-2 top-2 inline-flex h-7 w-7 items-center justify-center rounded-full border border-border/70 bg-offwhite text-charcoal/70"
-        {...listeners}
-      >
-        <GripVertical className="h-3.5 w-3.5" />
-      </button>
       <div className="flex items-center gap-3">
         <Image
           src={player.photoUrl}
           alt={player.name}
           width={56}
           height={56}
-          className={cn(
-            "h-12 w-12 rounded-2xl object-cover ring-1 ring-border",
-            size === "bench" && "h-10 w-10",
-          )}
+          className="h-12 w-12 rounded-2xl object-cover ring-1 ring-border"
         />
         <div className="min-w-0">
-          <p className={cn("truncate font-semibold text-forest", size === "bench" && "text-sm")}>
+          <p className="truncate font-semibold text-forest">
+            {player.isWorldCup ? `${player.countryFlag} ` : null}
             {player.name}
           </p>
-          <p className={cn("text-xs text-charcoal/70", size === "bench" && "text-[11px]")}>
-            {player.position}
+          <p className="text-xs text-charcoal/70">
+            {player.position} • {player.competitionName}
           </p>
         </div>
       </div>
@@ -153,17 +134,57 @@ function SortablePlayerCard({ player, size = "starting", onOpenDetails }: Player
         </span>
       </div>
 
-      <div className="mt-2 flex gap-1">
-        {player.captain && (
-          <Badge variant="secondary" className="rounded-xl bg-gold/25 text-gold">
-            C ✨
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        {player.isWorldCup ? (
+          <Badge variant="secondary" className="rounded-xl bg-gold/20 text-gold">
+            World Cup
           </Badge>
-        )}
-        {player.viceCaptain && (
-          <Badge variant="secondary" className="rounded-xl bg-sage/45 text-forest">
-            VC
-          </Badge>
-        )}
+        ) : null}
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            className={cn(
+              "inline-flex h-8 items-center rounded-xl border border-border bg-offwhite px-2.5 text-[11px] font-semibold",
+              "text-forest focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/70",
+            )}
+            disabled={assigningRole}
+          >
+            {player.captain ? "C" : player.viceCaptain ? "VC" : "Set C/VC"}
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start">
+            <DropdownMenuItem
+              onClick={() => onAssignRole(player.id, "captain")}
+              disabled={player.captain || assigningRole}
+            >
+              Confirm Captain
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => onAssignRole(player.id, "vice_captain")}
+              disabled={player.viceCaptain || assigningRole}
+            >
+              Confirm Vice-Captain
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className={cn("h-8 rounded-xl", isSelectedSwapTarget && "border-gold text-gold")}
+          onClick={() => onToggleSwapTarget(player.id)}
+        >
+          {isSelectedSwapTarget ? "Swap Target Selected" : "Select as Swap Target"}
+        </Button>
+
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          className="h-8 rounded-xl px-2.5 text-forest hover:bg-offwhite"
+          onClick={() => onOpenDetails(player)}
+        >
+          Details
+        </Button>
       </div>
     </article>
   );
@@ -171,132 +192,149 @@ function SortablePlayerCard({ player, size = "starting", onOpenDetails }: Player
 
 export function RosterManagerClient({
   persona,
+  rosterId,
   leagueName,
   competitionName,
-  projectedPoints,
+  squadSize,
+  benchCapacity,
+  totalTeamPoints,
+  projectedPointsThisMatchday,
   startingPlayers,
   benchPlayers,
+  availablePlayers,
 }: RosterManagerClientProps) {
-  const initialStarting = useMemo(() => sortStarting433(startingPlayers), [startingPlayers]);
-  const [starting, setStarting] = useState<RosterPlayer[]>(initialStarting);
-  const [bench, setBench] = useState<RosterPlayer[]>(benchPlayers.slice(0, 4));
-  const [activeId, setActiveId] = useState<string | null>(null);
+  const router = useRouter();
+  const [starting, setStarting] = useState<RosterPlayer[]>(startingPlayers);
+  const [bench, setBench] = useState<RosterPlayer[]>(benchPlayers.slice(0, benchCapacity));
+  const [selectedSwapTargetId, setSelectedSwapTargetId] = useState<string | null>(null);
   const [selectedPlayer, setSelectedPlayer] = useState<RosterPlayer | null>(null);
-  const [transferOpen, setTransferOpen] = useState(false);
-  const [healthOpen, setHealthOpen] = useState(false);
-  const [healthMessage, setHealthMessage] = useState(
-    assistantTemplates[persona].roster_health[0]!,
-  );
+  const [showBreakdown, setShowBreakdown] = useState(false);
+  const [manageOpen, setManageOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [positionFilter, setPositionFilter] = useState<"ALL" | "GK" | "DEF" | "MID" | "FWD">("ALL");
+  const [submittingAction, setSubmittingAction] = useState(false);
+  const [assigningRole, setAssigningRole] = useState(false);
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(TouchSensor, {
-      activationConstraint: { delay: 120, tolerance: 8 },
-    }),
-  );
-
-  const findContainer = (playerId: string): ContainerType | null => {
-    if (starting.some((player) => player.id === playerId)) return "starting";
-    if (bench.some((player) => player.id === playerId)) return "bench";
-    return null;
+  const openPlayerDetails = (player: RosterPlayer) => {
+    setShowBreakdown(false);
+    setSelectedPlayer(player);
   };
 
-  const openHealthSheet = () => {
-    const pool = assistantTemplates[persona].roster_health;
-    const next = pool[Math.floor(Math.random() * pool.length)]!;
-    setHealthMessage(next);
-    setHealthOpen(true);
+  const benchSpotsLeft = Math.max(0, benchCapacity - bench.length);
+
+  const captainPlayer = [...starting, ...bench].find((player) => player.captain) ?? null;
+  const captainBoost = captainPlayer ? Math.round(captainPlayer.rating * 1.8) : 0;
+
+  const handleAssignRole = async (playerId: string, role: "captain" | "vice_captain") => {
+    try {
+      setAssigningRole(true);
+      const response = await fetch("/api/roster/captain", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ rosterId, playerId, role }),
+      });
+      const payload = (await response.json()) as { ok?: boolean; error?: string };
+      if (!response.ok || !payload.ok) {
+        throw new Error(payload.error ?? "Could not update role.");
+      }
+
+      const applyRole = (player: RosterPlayer) => {
+        if (role === "captain") {
+          return {
+            ...player,
+            captain: player.id === playerId,
+            viceCaptain: player.id === playerId ? false : player.viceCaptain,
+          };
+        }
+        return {
+          ...player,
+          viceCaptain: player.id === playerId,
+          captain: player.id === playerId ? false : player.captain,
+        };
+      };
+      setStarting((prev) => prev.map(applyRole));
+      setBench((prev) => prev.map(applyRole));
+      toast.success(
+        role === "captain"
+          ? "Captain assigned with confidence"
+          : "Vice-captain assigned for cover",
+      );
+      router.refresh();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Role update failed");
+    } finally {
+      setAssigningRole(false);
+    }
   };
 
-  const askHealthAgain = () => {
-    const pool = assistantTemplates[persona].roster_health.filter(
-      (template) => template !== healthMessage,
-    );
-    const source = pool.length > 0 ? pool : assistantTemplates[persona].roster_health;
-    const next = source[Math.floor(Math.random() * source.length)]!;
-    setHealthMessage(next);
+  const filteredPool = useMemo(() => {
+    const normalized = searchQuery.trim().toLowerCase();
+    return availablePlayers.filter((player) => {
+      const matchesPosition = positionFilter === "ALL" || player.position === positionFilter;
+      const matchesQuery =
+        normalized.length === 0 ||
+        player.name.toLowerCase().includes(normalized) ||
+        player.position.toLowerCase().includes(normalized);
+      return matchesPosition && matchesQuery;
+    });
+  }, [availablePlayers, positionFilter, searchQuery]);
+
+  const handleAddToBench = async (playerId: string) => {
+    try {
+      setSubmittingAction(true);
+      const response = await fetch("/api/roster/manage", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "add_to_roster", rosterId, playerId }),
+      });
+      const payload = (await response.json()) as { ok?: boolean; error?: string };
+      if (!response.ok || !payload.ok) {
+        throw new Error(payload.error ?? "Could not add player.");
+      }
+      toast.success("Player added to roster");
+      router.refresh();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Add failed");
+    } finally {
+      setSubmittingAction(false);
+    }
   };
 
-  const handleDragStart = (event: DragStartEvent) => {
-    setActiveId(String(event.active.id));
-  };
-
-  const handleDragOver = (event: DragOverEvent) => {
-    const active = String(event.active.id);
-    const over = event.over ? String(event.over.id) : null;
-    if (!over || active === over) return;
-
-    const activeContainer = findContainer(active);
-    const overContainer = findContainer(over);
-    if (!activeContainer || !overContainer || activeContainer === overContainer) return;
-
-    if (activeContainer === "starting") {
-      const activeIndex = starting.findIndex((player) => player.id === active);
-      const overIndex = bench.findIndex((player) => player.id === over);
-      if (activeIndex < 0 || overIndex < 0) return;
-
-      const incoming = bench[overIndex]!;
-      const outgoing = starting[activeIndex]!;
-      const nextStarting = [...starting];
-      const nextBench = [...bench];
-      nextStarting[activeIndex] = incoming;
-      nextBench[overIndex] = outgoing;
-      setStarting(nextStarting);
-      setBench(nextBench);
+  const handleSwapPlayer = async (incomingPlayerId: string) => {
+    if (!selectedSwapTargetId) {
+      toast.error("Select a roster player as swap target first.");
       return;
     }
-
-    const activeIndex = bench.findIndex((player) => player.id === active);
-    const overIndex = starting.findIndex((player) => player.id === over);
-    if (activeIndex < 0 || overIndex < 0) return;
-
-    const incoming = starting[overIndex]!;
-    const outgoing = bench[activeIndex]!;
-    const nextStarting = [...starting];
-    const nextBench = [...bench];
-    nextStarting[overIndex] = outgoing;
-    nextBench[activeIndex] = incoming;
-    setStarting(nextStarting);
-    setBench(nextBench);
-  };
-
-  const handleDragEnd = (event: DragEndEvent) => {
-    const active = String(event.active.id);
-    const over = event.over ? String(event.over.id) : null;
-    setActiveId(null);
-
-    if (!over || active === over) return;
-    const activeContainer = findContainer(active);
-    const overContainer = findContainer(over);
-    if (!activeContainer || !overContainer || activeContainer !== overContainer) return;
-
-    if (activeContainer === "starting") {
-      const oldIndex = starting.findIndex((player) => player.id === active);
-      const newIndex = starting.findIndex((player) => player.id === over);
-      if (oldIndex < 0 || newIndex < 0) return;
-      setStarting((prev) => arrayMove(prev, oldIndex, newIndex));
-      return;
+    try {
+      setSubmittingAction(true);
+      const response = await fetch("/api/roster/manage", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "swap_with_starter",
+          outgoingPlayerId: selectedSwapTargetId,
+          rosterId,
+          incomingPlayerId,
+        }),
+      });
+      const payload = (await response.json()) as { ok?: boolean; error?: string };
+      if (!response.ok || !payload.ok) {
+        throw new Error(payload.error ?? "Could not complete swap.");
+      }
+      toast.success("Starter swapped successfully");
+      setSelectedSwapTargetId(null);
+      router.refresh();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Swap failed");
+    } finally {
+      setSubmittingAction(false);
     }
-
-    const oldIndex = bench.findIndex((player) => player.id === active);
-    const newIndex = bench.findIndex((player) => player.id === over);
-    if (oldIndex < 0 || newIndex < 0) return;
-    setBench((prev) => arrayMove(prev, oldIndex, newIndex));
   };
-
-  const pitchRows = [
-    { label: "Forwards", players: starting.slice(0, 3), cols: "grid-cols-3" },
-    { label: "Midfield", players: starting.slice(3, 6), cols: "grid-cols-3" },
-    { label: "Defense", players: starting.slice(6, 10), cols: "grid-cols-4" },
-    { label: "Goalkeeper", players: starting.slice(10, 11), cols: "grid-cols-1 max-w-[220px] mx-auto" },
-  ] as const;
-
-  const activeFunctionTitle = assistantFunctionMeta.roster_health.title;
 
   return (
     <section className="space-y-5 sm:space-y-6">
       <header className="rounded-3xl border border-border/70 bg-card/90 p-6 shadow-soft sm:p-8">
-        <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="flex flex-wrap items-start justify-between gap-4 sm:gap-5">
           <div>
             <h2 className="text-3xl font-bold tracking-tight text-forest">My Roster</h2>
             <div className="mt-3 flex flex-wrap items-center gap-2">
@@ -304,117 +342,84 @@ export function RosterManagerClient({
               <Badge variant="secondary" className="rounded-xl bg-sage/45 text-forest">
                 {competitionName}
               </Badge>
+              <Badge variant="secondary" className="rounded-xl bg-offwhite text-forest">
+                Assistant: {personaLabel(persona)}
+              </Badge>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="text-right">
-              <p className="text-xs uppercase tracking-[0.14em] text-charcoal/65">
-                Projected this week
-              </p>
-              <p className="text-2xl font-bold text-gold">{projectedPoints} pts</p>
-            </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger
-                className={cn(
-                  "inline-flex h-10 items-center gap-2 rounded-2xl border border-border bg-background px-3 text-sm font-medium text-forest shadow-soft",
-                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold",
-                )}
-              >
-                Formation: 4-3-3
-                <ChevronDown className="h-4 w-4" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>4-3-3 (Fixed in this demo)</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+          <div className="text-right">
+            <p className="text-xs uppercase tracking-[0.14em] text-charcoal/65">Total Team Points</p>
+            <p className="text-2xl font-bold text-gold">{totalTeamPoints}</p>
+            <p className="text-sm text-charcoal/75">
+              Projected Points This Matchday:{" "}
+              <span className="font-semibold text-forest">{projectedPointsThisMatchday}</span>
+            </p>
           </div>
+        </div>
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          <Badge variant="secondary" className="rounded-xl bg-offwhite text-forest">
+            Squad size: {starting.length + bench.length}/{squadSize}
+          </Badge>
+          <Badge variant="secondary" className="rounded-xl bg-offwhite text-forest">
+            Bench spots left: {benchSpotsLeft}
+          </Badge>
+          <Badge variant="secondary" className="rounded-xl bg-gold/20 text-gold">
+            Captain boost projection: +{captainBoost} pts
+          </Badge>
+          <Button
+            type="button"
+            className="ml-auto h-12 rounded-3xl bg-sage px-6 text-base font-semibold text-forest hover:bg-sage/80"
+            onClick={() => setManageOpen(true)}
+          >
+            Manage Squad
+          </Button>
         </div>
       </header>
 
-      <Card className="relative overflow-hidden rounded-3xl border-border/70 bg-card/90 py-6 shadow-soft">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(168,202,186,0.14),transparent_45%),radial-gradient(circle_at_80%_0%,rgba(212,175,119,0.12),transparent_40%),linear-gradient(rgba(10,61,42,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(10,61,42,0.05)_1px,transparent_1px)] bg-[size:100%_100%,100%_100%,52px_52px,52px_52px] opacity-60"
-        />
-        <CardHeader className="relative px-6">
-          <CardTitle className="text-forest">Starting XI (4-3-3)</CardTitle>
-          <CardDescription>Drag players to reorder or swap with bench.</CardDescription>
+      <Card className="rounded-3xl border-border/70 bg-card/90 py-5 shadow-soft">
+        <CardHeader className="px-6">
+          <CardTitle className="text-forest">Starting XI</CardTitle>
+          <CardDescription>Core starters first, bench depth below.</CardDescription>
         </CardHeader>
-        <CardContent className="relative space-y-5 px-6 pb-2">
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragStart={handleDragStart}
-            onDragOver={handleDragOver}
-            onDragEnd={handleDragEnd}
-          >
-            <SortableContext
-              items={starting.map((player) => player.id)}
-              strategy={rectSortingStrategy}
-            >
-              {pitchRows.map((row) => (
-                <div key={row.label} className={cn("grid gap-3", row.cols)}>
-                  {row.players.map((player) => (
-                    <SortablePlayerCard
-                      key={player.id}
-                      player={player}
-                      onOpenDetails={setSelectedPlayer}
-                    />
-                  ))}
-                </div>
-              ))}
-            </SortableContext>
-
-            <div className="mt-6 rounded-3xl border border-border/70 bg-offwhite/70 p-4">
-              <div className="mb-3 flex items-center justify-between">
-                <h3 className="text-base font-semibold text-forest">
-                  Bench ({bench.length} players)
-                </h3>
-                <span className="text-xs text-charcoal/65">Drag to swap with starters</span>
-              </div>
-
-              <div className="overflow-x-auto pb-1">
-                <SortableContext
-                  items={bench.map((player) => player.id)}
-                  strategy={rectSortingStrategy}
-                >
-                  <div className="flex gap-3">
-                    {bench.map((player) => (
-                      <SortablePlayerCard
-                        key={player.id}
-                        player={player}
-                        size="bench"
-                        onOpenDetails={setSelectedPlayer}
-                      />
-                    ))}
-                  </div>
-                </SortableContext>
-              </div>
-            </div>
-          </DndContext>
+        <CardContent className="space-y-3 px-6">
+          {starting.map((player) => (
+            <SortablePlayerCard
+              key={player.id}
+              player={player}
+              onOpenDetails={openPlayerDetails}
+              onAssignRole={handleAssignRole}
+              assigningRole={assigningRole}
+              isSelectedSwapTarget={selectedSwapTargetId === player.id}
+              onToggleSwapTarget={(playerId) =>
+                setSelectedSwapTargetId((current) => (current === playerId ? null : playerId))
+              }
+            />
+          ))}
         </CardContent>
       </Card>
 
-      <div className="grid gap-3 sm:grid-cols-2">
-        <Button
-          type="button"
-          size="lg"
-          className="h-12 rounded-3xl bg-sage text-forest hover:bg-sage/80"
-          onClick={openHealthSheet}
-        >
-          Roster Health Check
-        </Button>
-        <Button
-          type="button"
-          size="lg"
-          variant="outline"
-          className="h-12 rounded-3xl border-border bg-card text-forest hover:bg-offwhite"
-          onClick={() => setTransferOpen(true)}
-        >
-          Make Transfer
-        </Button>
-      </div>
+      <Card className="rounded-3xl border-border/70 bg-card/90 py-5 shadow-soft">
+        <CardHeader className="px-6">
+          <CardTitle className="text-forest">Bench</CardTitle>
+          <CardDescription>{bench.length} players available for rotation.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3 px-6">
+          {bench.map((player) => (
+            <SortablePlayerCard
+              key={player.id}
+              player={player}
+              onOpenDetails={openPlayerDetails}
+              onAssignRole={handleAssignRole}
+              assigningRole={assigningRole}
+              isSelectedSwapTarget={selectedSwapTargetId === player.id}
+              onToggleSwapTarget={(playerId) =>
+                setSelectedSwapTargetId((current) => (current === playerId ? null : playerId))
+              }
+            />
+          ))}
+        </CardContent>
+      </Card>
 
       <Sheet open={Boolean(selectedPlayer)} onOpenChange={(open) => !open && setSelectedPlayer(null)}>
         <SheetContent side="bottom" className="rounded-t-3xl border-border bg-card px-0 pt-0">
@@ -431,73 +436,147 @@ export function RosterManagerClient({
                 </span>
               </p>
               <p className="mt-1">Recent form: {selectedPlayer?.recentForm}</p>
-            </div>
-          </div>
-        </SheetContent>
-      </Sheet>
-
-      <Sheet open={healthOpen} onOpenChange={setHealthOpen}>
-        <SheetContent side="bottom" className="rounded-t-3xl border-border bg-card px-0 pt-0">
-          <SheetHeader className="px-6 pt-6">
-            <SheetTitle className="text-forest">{activeFunctionTitle}</SheetTitle>
-            <SheetDescription>
-              {personaEmoji(persona)} {personaLabel(persona)} perspective
-            </SheetDescription>
-          </SheetHeader>
-          <div className="space-y-4 px-6 pb-6">
-            <div className="rounded-2xl border border-border/70 bg-offwhite p-4 text-sm leading-relaxed text-charcoal">
-              {healthMessage}
-              <span className="ml-2 inline-flex items-center text-gold">
-                <Sparkles className="h-4 w-4" />
-              </span>
-            </div>
-            <div className="flex flex-wrap gap-2">
               <Button
                 type="button"
-                size="sm"
-                variant="secondary"
-                className="h-10 rounded-2xl bg-sage/55 text-forest hover:bg-sage/70"
-                onClick={askHealthAgain}
+                variant="ghost"
+                className="mt-3 h-8 rounded-xl px-0 text-forest hover:bg-transparent hover:text-forest"
+                onClick={() => setShowBreakdown((prev) => !prev)}
               >
-                Ask again
+                {showBreakdown ? "Hide points breakdown" : "Show points breakdown"}
               </Button>
-              <Button
-                type="button"
-                size="sm"
-                variant="outline"
-                className="h-10 rounded-2xl"
-                onClick={() => {
-                  setHealthOpen(false);
-                  window.location.href = "/assistant";
-                }}
-              >
-                Open Assistant
-              </Button>
+              {showBreakdown && selectedPlayer ? (
+                <div className="mt-3 grid grid-cols-2 gap-2 rounded-2xl border border-border/60 bg-card/85 p-3 text-xs text-charcoal/85">
+                  <p>Goals: {selectedPlayer.pointsBreakdown.goals}</p>
+                  <p>Assists: {selectedPlayer.pointsBreakdown.assists}</p>
+                  <p>Bonus: {selectedPlayer.pointsBreakdown.bonusPoints}</p>
+                  <p>Appearances: {selectedPlayer.pointsBreakdown.appearances}</p>
+                  <p>Avg Rating: {selectedPlayer.pointsBreakdown.averageRating.toFixed(2)}</p>
+                  <p className="font-semibold text-forest">
+                    Total Points: {selectedPlayer.pointsBreakdown.totalPoints}
+                  </p>
+                </div>
+              ) : null}
             </div>
           </div>
         </SheetContent>
       </Sheet>
 
-      <Sheet open={transferOpen} onOpenChange={setTransferOpen}>
-        <SheetContent side="bottom" className="rounded-t-3xl border-border bg-card px-0 pt-0">
-          <SheetHeader className="px-6 pt-6">
-            <SheetTitle className="text-forest">Transfer Market</SheetTitle>
-            <SheetDescription>Preview</SheetDescription>
-          </SheetHeader>
-          <div className="px-6 pb-6">
-            <div className="rounded-2xl border border-border/70 bg-offwhite p-4 text-sm text-charcoal">
-              Transfer Market is opening soon. You can already prepare swaps in the Trade Market.
+      <Dialog open={manageOpen} onOpenChange={setManageOpen}>
+        <DialogContent className="max-h-[92vh] max-w-6xl overflow-hidden rounded-3xl border border-border/70 bg-card p-0 shadow-glow">
+          <DialogHeader className="border-b border-border/70 px-6 py-5">
+            <DialogTitle className="text-xl text-forest">Manage Squad</DialogTitle>
+            <DialogDescription>
+              Search all available players and add to roster or swap with your selected player.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 p-6">
+            <div className="rounded-2xl border border-border/70 bg-offwhite p-3">
+              <input
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder="Search players by name"
+                className="h-10 w-full rounded-xl border border-border bg-card px-3 text-sm text-foreground outline-none ring-0 focus:border-gold"
+              />
+              <div className="mt-3 flex flex-wrap gap-2">
+                {(["ALL", "GK", "DEF", "MID", "FWD"] as const).map((position) => (
+                  <Button
+                    key={position}
+                    type="button"
+                    size="sm"
+                    variant={positionFilter === position ? "default" : "outline"}
+                    className={cn(
+                      "h-8 rounded-xl px-3",
+                      positionFilter === position
+                        ? "bg-sage text-forest hover:bg-sage/80"
+                        : "bg-card text-charcoal",
+                    )}
+                    onClick={() => setPositionFilter(position)}
+                  >
+                    {position === "ALL" ? "All" : position}
+                  </Button>
+                ))}
+              </div>
+              {selectedSwapTargetId ? (
+                <p className="mt-2 text-xs text-charcoal/70">
+                  Swap target selected. Choose a player card and click swap.
+                </p>
+              ) : null}
+            </div>
+
+            <div className="max-h-[58vh] overflow-y-auto pr-1">
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {filteredPool.map((player) => {
+                  const canAdd = !player.inRoster && benchSpotsLeft > 0;
+                  return (
+                    <article
+                      key={player.id}
+                      className="rounded-2xl border border-border/70 bg-offwhite p-3 shadow-soft"
+                    >
+                      <div className="flex gap-3">
+                        <Image
+                          src={player.photoUrl}
+                          alt={player.name}
+                          width={52}
+                          height={52}
+                          className="h-12 w-12 rounded-2xl object-cover ring-1 ring-border"
+                        />
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate font-semibold text-forest">
+                            {player.isWorldCup ? `${player.countryFlag} ` : null}
+                            {player.name}
+                          </p>
+                          <p className="text-xs text-charcoal/75">
+                            {player.position} • {player.competitionName}
+                          </p>
+                          <p className="text-xs text-charcoal/75">
+                            Rating {player.rating.toFixed(1)} • {player.totalPoints} pts
+                          </p>
+                          <p className="mt-1 text-[11px] text-charcoal/70">{player.recentForm}</p>
+                        </div>
+                      </div>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {player.inRoster ? (
+                          <Badge variant="secondary" className="rounded-xl bg-sage/40 text-forest">
+                            In Roster
+                          </Badge>
+                        ) : (
+                          <>
+                            <Button
+                              type="button"
+                              size="sm"
+                              className="h-8 rounded-xl bg-sage text-forest hover:bg-sage/80"
+                              disabled={!canAdd || submittingAction}
+                              onClick={() => handleAddToBench(player.id)}
+                            >
+                              Add to Roster
+                            </Button>
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="outline"
+                              className="h-8 rounded-xl"
+                              disabled={submittingAction || !selectedSwapTargetId}
+                              onClick={() => handleSwapPlayer(player.id)}
+                            >
+                              {selectedSwapTargetId ? "Swap with Selected Player" : "Select swap target first"}
+                            </Button>
+                          </>
+                        )}
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+              {filteredPool.length === 0 ? (
+                <div className="rounded-2xl border border-border/70 bg-offwhite p-4 text-sm text-charcoal/70">
+                  No players match your current filters.
+                </div>
+              ) : null}
             </div>
           </div>
-        </SheetContent>
-      </Sheet>
+        </DialogContent>
+      </Dialog>
 
-      {activeId && (
-        <div
-          className="pointer-events-none fixed inset-0 z-20 bg-black/0"
-          aria-hidden="true"
-        />
-      )}
     </section>
   );
 }

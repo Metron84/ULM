@@ -35,6 +35,7 @@ type Step = 1 | 2 | 3;
 
 function statusBadge(status: TradeStatus) {
   if (status === "completed") return { label: "Completed", className: "bg-gold/25 text-gold" };
+  if (status === "accepted") return { label: "Accepted", className: "bg-sage/45 text-forest" };
   if (status === "commissioner_pending") {
     return { label: "Commissioner Review", className: "bg-sage/45 text-forest" };
   }
@@ -78,10 +79,27 @@ export function TradesClient({ data }: TradesClientProps) {
     if (tab === "mine") {
       return data.trades.filter((trade) => trade.proposerId === data.currentUserId);
     }
-    return data.trades.filter(
-      (trade) => trade.status === "proposed" || trade.status === "commissioner_pending",
+    return data.trades.filter((trade) =>
+      trade.status === "proposed" ||
+      trade.status === "commissioner_pending" ||
+      trade.status === "accepted",
     );
   }, [data.currentUserId, data.trades, tab]);
+
+  const openCount = useMemo(
+    () =>
+      data.trades.filter(
+        (trade) =>
+          trade.status === "proposed" ||
+          trade.status === "commissioner_pending" ||
+          trade.status === "accepted",
+      ).length,
+    [data.trades],
+  );
+  const myProposalsCount = useMemo(
+    () => data.trades.filter((trade) => trade.proposerId === data.currentUserId).length,
+    [data.trades, data.currentUserId],
+  );
 
   const toggleSelection = (
     current: string[],
@@ -226,6 +244,7 @@ export function TradesClient({ data }: TradesClientProps) {
           )}
         >
           Open Trades
+          <span className="ml-1 text-xs">({openCount})</span>
         </button>
         <button
           type="button"
@@ -236,6 +255,7 @@ export function TradesClient({ data }: TradesClientProps) {
           )}
         >
           My Proposals
+          <span className="ml-1 text-xs">({myProposalsCount})</span>
         </button>
       </div>
 
@@ -243,7 +263,9 @@ export function TradesClient({ data }: TradesClientProps) {
         {visibleTrades.length === 0 ? (
           <Card className="rounded-3xl border-border/70 bg-card/90 py-6 shadow-soft">
             <CardContent className="px-6 text-sm text-charcoal/70">
-              No trades in this tab yet.
+                {tab === "open"
+                  ? "No open trades right now."
+                  : "You have not sent any proposals yet."}
             </CardContent>
           </Card>
         ) : (
